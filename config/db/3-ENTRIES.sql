@@ -104,10 +104,10 @@ insert into computer (id,name,introduced,discontinued,company_id) values ( 60,'V
 insert into computer (id,name,introduced,discontinued,company_id) values ( 61,'VAX 11/780','1977-10-25',null,10);
 insert into computer (id,name,introduced,discontinued,company_id) values ( 62,'VAX 11/750','1980-10-01',null,10);
 insert into computer (id,name,introduced,discontinued,company_id) values ( 63,'TX-2','1958-01-01',null,11);
-insert into computer (id,name,introduced,discontinued,company_id) values ( 64,'TX-0','1956-01-01',null,11);
+insert into computer (id,name,introduced,discontinued,company_id) values ( 64,'TX-0','1956-01-01', '%Y-%m-%d',null,11);
 insert into computer (id,name,introduced,discontinued,company_id) values ( 65,'Whirlwind','1951-04-20',null,11);
 insert into computer (id,name,introduced,discontinued,company_id) values ( 66,'ENIAC','1946-02-15','1955-10-02',12);
-insert into computer (id,name,introduced,discontinued,company_id) values ( 67,'IBM PC','1981-08-12',null,13);
+insert into computer (id,name,introduced,discontinued,company_id) values ( 67,'IBM PC','1981-08-12',null,13); 
 insert into computer (id,name,introduced,discontinued,company_id) values ( 68,'Macintosh Classic',null,null,null);
 insert into computer (id,name,introduced,discontinued,company_id) values ( 69,'Macintosh Classic II','1991-01-01',null,1);
 insert into computer (id,name,introduced,discontinued,company_id) values ( 70,'Amiga','1985-01-01',null,14);
