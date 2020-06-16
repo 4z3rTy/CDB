@@ -1,5 +1,6 @@
 package persistence;
 import java.sql.*;
+import java.time.LocalDate;
 
 public class OnComputer {
 	static String tbName="computer";
@@ -50,7 +51,7 @@ public class OnComputer {
         }
     }
     
-    public static void updateComputerDisc(Connection con,Date newDisc, int computerID)
+    public static void updateComputerDisc(Connection con,Date date, int computerID)
             throws SQLException {
 
             PreparedStatement pstmt = null;   
@@ -61,7 +62,7 @@ public class OnComputer {
                 pstmt = con.prepareStatement(
                             "UPDATE computer SET discontinued=? WHERE id=?");
 
-                pstmt.setDate(1, newDisc);
+                pstmt.setDate(1, date);
                 pstmt.setInt(2, computerID);
                 pstmt.executeUpdate();
             }
@@ -71,7 +72,7 @@ public class OnComputer {
         }
     
     
-    public void insertComputer(Connection con,String computerName, int companyID, Date intro, Date disco)
+    public static void insertComputer(Connection con,String computerName, int companyID, Date intro, Date disco)
     		throws SQLException {
 
     		Statement stmt=null;

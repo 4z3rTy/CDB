@@ -2,7 +2,12 @@ package ui;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Scanner;
 
 import mapper.SqlShenanigans;
@@ -32,7 +37,7 @@ public class CLI {
 	// 1. Keyin class in the current directory
 
 
-	  public static void main(String[] args) throws IOException, SQLException {
+	  public static void main(String[] args) throws IOException, SQLException, ParseException {
 	    // Local variable
 	    //int swValue;
 	    Scanner sc = new Scanner(System.in);
@@ -64,7 +69,7 @@ public class CLI {
 		    
 		    int id;
 		    String name;
-		    String c_id;
+		    int c_id;
 		    String intr;
 		    String disc;
 		    
@@ -102,18 +107,24 @@ public class CLI {
 	    
 	    case 4:
 		      System.out.println("'Create a computer' selected:");
-		      System.out.println("Please indicate the desired attributes of the computer you wish to create (id, name, date introduced, date discontinued & company id) ->");
+		      System.out.println("Please indicate the desired attributes of the computer you wish to create (name, date introduced, date discontinued & company id) ->");
 		      Scanner four = new Scanner(System.in);
-		      id=four.nextInt();
 		      name=four.next();
 		      intr=four.next();  // TODO Have to format to get a correct sql Date at a later point. Probably in the Mapper would be ideal.
 		      disc=four.next();
-		      c_id=four.next();
-		      System.out.println("Attempting to create computer with following attributes ID=" +id);
-		      System.out.println("name=" +name);
+		      c_id=four.nextInt();
+		      System.out.println("Attempting to create computer with following attributes name=" +name);
 		      System.out.println("date introduced=" +intr);
 		      System.out.println("date discontinued=" +disc);
 		      System.out.println("company ID=" +c_id);
+	    	
+	    	  DateTimeFormatter formatter= DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
+	    	  LocalDate date=LocalDate.parse(disc, formatter);
+	    	  Date sqlDate=Date.valueOf(date);
+	    	  LocalDate date2=LocalDate.parse(intr, formatter);
+	    	  Date sqlDate2=Date.valueOf(date2);
+	    	  
+	    	  OnComputer.insertComputer(con, name, c_id, sqlDate2, sqlDate);
 		      break;
 	    
 	   
@@ -138,9 +149,11 @@ public class CLI {
 		      case 2:
 		    	  System.out.println("Please input a new discontinued date for computer"+id+":");
 		    	  Scanner five2= new Scanner(System.in);
-		    	  name=five2.next();
-		    	  // TODO Need to cast into date here somehow someway
-		    	  OnComputer.updateComputerName(con, name, id);
+		    	  disc=five2.next();
+		    	  DateTimeFormatter formatter1= DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
+		    	  LocalDate date1=LocalDate.parse(disc, formatter1);
+		    	  Date sqlDate1=Date.valueOf(date1);
+		    	  OnComputer.updateComputerDisc(con, sqlDate1, id);
 		    	  System.out.println("Your modification has been carried out (hopefully, maybe, probably, definitely)");
 		    	  System.out.println("");
 		    	  break;

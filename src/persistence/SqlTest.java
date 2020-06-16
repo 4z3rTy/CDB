@@ -9,17 +9,16 @@ import mapper.SqlShenanigans;
 public class SqlTest {
 
 	public static void main(String[] args) {
-    	long millis=System.currentTimeMillis();  
-        java.sql.Date intro=new java.sql.Date(millis);  
-    	Date disco=new java.sql.Date(millis);
     	
     	OnCompany r= new OnCompany();
     	OnComputer s=new OnComputer();
     	SqlShenanigans server=new SqlShenanigans("root","root");
 	    Connection con=server.getCo();
+	    Date d=new Date(0);
+	    
     	
     	try {
-    		s.insertComputer(con,"XXX",42,disco,disco);
+    		OnComputer.insertComputer(con,"XXX",42,d,d);
 	    	//OnComputer.viewComputer(con);
 	    	//OnComputer.viewCompDetails(con, 574);
 	    	//OnComputer.deleteComputer(con, 666);
