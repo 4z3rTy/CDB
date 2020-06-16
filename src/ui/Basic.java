@@ -2,13 +2,13 @@ package ui;
 
 import java.util.Scanner;
 
-public class Myne {
+public class Basic {
 
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 		boolean running=true;
 		int option;
-		while (true)
+		while (running)
 	    {
 	    // Display menu graphics
 	    System.out.println("===============================================");
@@ -47,6 +47,8 @@ public class Myne {
 		      break;
 	    case 7:
 	      System.out.println("Exit selected...bye bye!");
+	      sc.close();
+	      running=false;
 	      break; 
 	    default:
 	    	System.out.println("Please Try again :) ");

@@ -1,6 +1,12 @@
 package ui;
 
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Scanner;
+
+import mapper.SqlShenanigans;
+import persistence.OnComputer;
 
 public class CLI {
 
@@ -26,7 +32,7 @@ public class CLI {
 	// 1. Keyin class in the current directory
 
 
-	  public static void main(String[] args) {
+	  public static void main(String[] args) throws IOException, SQLException {
 	    // Local variable
 	    //int swValue;
 	    Scanner sc = new Scanner(System.in);
@@ -34,49 +40,131 @@ public class CLI {
 		int option;
 		
 
-	    // Display menu graphics
-	    System.out.println("===============================================");
-	    System.out.println("|   CDB WONDERFUL CLI (Much options such wow) |");
-	    System.out.println("===============================================");
-	    System.out.println("| Options:                                    |");
-	    System.out.println("|        1. List computers                    |");
-	    System.out.println("|        2. List companies                    |");
-	    System.out.println("|        3. Show computer details             |");
-	    System.out.println("|        4. Create a computer                 |");
-	    System.out.println("|        5. Update a computer                 |");
-	    System.out.println("|        6. Delete a computer                 |");
-	    System.out.println("|        7. Exit                              |");
-	    System.out.println("===============================================");
 	    while (running)
 	    {
-	    System.out.println(" Please select the option you are interested in:  ");
-	    option=sc.nextInt();
+	    	// Display menu graphics
+	    	System.out.println("===============================================");
+		    System.out.println("|   CDB WONDERFUL CLI (Much options such wow) |");
+		    System.out.println("===============================================");
+		    System.out.println("| Available Options:                          |");
+		    System.out.println("|        1. List all computers                |");
+		    System.out.println("|        2. List all companies                |");
+		    System.out.println("|        3. Show computer details             |");
+		    System.out.println("|        4. Create a computer                 |");
+		    System.out.println("|        5. Update a computer                 |");
+		    System.out.println("|        6. Delete a computer                 |");
+		    System.out.println("|        7. Exit                              |");
+		    System.out.println("===============================================");
+		    System.out.println("");
+		    System.out.println(" Please select the (next) option you are interested in:  ");
+		    option=sc.nextInt();
+		   
+		    
+		    
+		    
+		    int id;
+		    String name;
+		    String c_id;
+		    String intr;
+		    String disc;
+		    
+		    SqlShenanigans server=new SqlShenanigans("root","root");
+		    Connection con=server.getCo();
+	    
 	    // Switch construct
 	    switch (option) {
+	    
+	    
 	    case 1:
-	      System.out.println("List computers selected");
+	      System.out.println("'List all computers' selected ->");
+	      System.out.println("");
+	      persistence.OnComputer.viewComputer(con);
 	      break;
+	    
+	    
 	    case 2:
-	      System.out.println("List companies selected");
+	    	System.out.println("'List all companies' selected ->");
+	    	System.out.println("");
+	    	persistence.OnCompany.viewCompany(con);
 	      break;
+	    
+	    
 	    case 3:
-	      System.out.println("Show computer details selected");
+	      System.out.println("'Show computer details' selected:");
+	      System.out.println("Please indicate which computer you are interested in using its id ->");
+	      Scanner three = new Scanner(System.in);
+	      id=three.nextInt();
+	      System.out.println("Attempting to fetch computer details for computer ID="+id);
+	      System.out.println(id);
+	      OnComputer.viewCompDetails(con, id);  
 	      break;
+	    
+	    
 	    case 4:
-		      System.out.println("Create a computer selected");
+		      System.out.println("'Create a computer' selected:");
+		      System.out.println("Please indicate the desired attributes of the computer you wish to create (id, name, date introduced, date discontinued & company id) ->");
+		      Scanner four = new Scanner(System.in);
+		      id=four.nextInt();
+		      name=four.next();
+		      intr=four.next();  // TODO Have to format to get a correct sql Date at a later point. Probably in the Mapper would be ideal.
+		      disc=four.next();
+		      c_id=four.next();
+		      System.out.println("Attempting to create computer with following attributes ID=" +id);
+		      System.out.println("name=" +name);
+		      System.out.println("date introduced=" +intr);
+		      System.out.println("date discontinued=" +disc);
+		      System.out.println("company ID=" +c_id);
 		      break;
+	    
+	   
 	    case 5:
-		      System.out.println("Update a computer selected");
+		      System.out.println("'Update a computer' selected:");
+		      System.out.println("Please indicate which computer you wish to update using it's id ->");
+		      Scanner five = new Scanner(System.in);
+		      id=five.nextInt();
+		      int subc;
+		      System.out.println("Please input '1' if you wish to update "+id +"'s Computer name or '2' if you wish to update "+id +"'s discontinued date ->");
+		      subc=five.nextInt();
+		      switch(subc)
+		      {
+		      case 1:
+		    	  System.out.println("Please input a new name for computer"+id+":");
+		    	  Scanner subfive= new Scanner(System.in);
+		    	  name=subfive.next();
+		    	  OnComputer.updateComputerName(con, name, id);
+		    	  System.out.println("Your modification has been carried out (hopefully, maybe, probably, definitely)");
+		    	  System.out.println("");
+		    	  break;
+		      case 2:
+		    	  System.out.println("Please input a new discontinued date for computer"+id+":");
+		    	  Scanner five2= new Scanner(System.in);
+		    	  name=five2.next();
+		    	  // TODO Need to cast into date here somehow someway
+		    	  OnComputer.updateComputerName(con, name, id);
+		    	  System.out.println("Your modification has been carried out (hopefully, maybe, probably, definitely)");
+		    	  System.out.println("");
+		    	  break;
+		      }
 		      break;
+	   
+	    
 	    case 6:
-		      System.out.println("Delete a computer selected");
+		      System.out.println("'Delete a computer' selected:");
+		      System.out.println("Please indicate which computer you wish to delete using it's id ->");
+		      Scanner six=new Scanner(System.in);
+		      id=six.nextInt();
+		      OnComputer.deleteComputer(con,id);
+		      System.out.println("Computer " +id+" has been deleted (hopefully, maybe, probably, definitely)");
 		      break;
+	   
+	    
 	    case 7:
-	      System.out.println("Exit selected...bye bye!");
+	      System.out.println("'Exit' selected...bye bye!");
+	      sc.close();
 	      running=false;
 	      break; 
 	    default:
-	    	System.out.println("Please Try again :) ");
+	    	System.out.println("The option you selected is not currently available, please try again :) ");
 	    	break;  // This break is not really necessary
 	    }
 	  }
