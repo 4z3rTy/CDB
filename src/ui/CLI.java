@@ -1,5 +1,7 @@
 package ui;
 
+import java.util.Scanner;
+
 public class CLI {
 
 	/*
@@ -26,7 +28,11 @@ public class CLI {
 
 	  public static void main(String[] args) {
 	    // Local variable
-	    int swValue;
+	    //int swValue;
+	    Scanner sc = new Scanner(System.in);
+		boolean running=true;
+		int option;
+		
 
 	    // Display menu graphics
 	    System.out.println("===============================================");
@@ -41,15 +47,17 @@ public class CLI {
 	    System.out.println("|        6. Delete a computer                 |");
 	    System.out.println("|        7. Exit                              |");
 	    System.out.println("===============================================");
-	    swValue = Keyin.inInt(" Select option: ");
-
+	    while (running)
+	    {
+	    System.out.println(" Please select the option you are interested in:  ");
+	    option=sc.nextInt();
 	    // Switch construct
-	    switch (swValue) {
+	    switch (option) {
 	    case 1:
 	      System.out.println("List computers selected");
 	      break;
 	    case 2:
-	      System.out.println("List companies   selected");
+	      System.out.println("List companies selected");
 	      break;
 	    case 3:
 	      System.out.println("Show computer details selected");
@@ -65,11 +73,13 @@ public class CLI {
 		      break;
 	    case 7:
 	      System.out.println("Exit selected...bye bye!");
+	      running=false;
 	      break; 
 	    default:
 	    	System.out.println("Please Try again :) ");
 	    	break;  // This break is not really necessary
 	    }
+	  }
 	  }
 	}
 
