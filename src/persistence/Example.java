@@ -1,7 +1,6 @@
 package persistence;
 import java.sql.*;
 
-
 public class Example{
 	
 	
@@ -56,7 +55,7 @@ public void connectToAndQueryDatabase(String username , String password){
 	Connection con = null;
 	try {
 		con = DriverManager.getConnection(
-		        "jdbc:mysql://localhost:3306/computer?serverTimezone=UTC",
+		        "jdbc:mysql://localhost:3306/computer-database-db?serverTimezone=UTC",
 		        username, password);
 	} catch (SQLException e) {
 		// TODO Auto-generated catch block
@@ -67,9 +66,12 @@ Statement stmt;
 try {
 	stmt = con.createStatement();
 
-ResultSet rs = stmt.executeQuery("SELECT NAME FROM COMPUTER WHERE ID=42");
+ResultSet rs = stmt.executeQuery("SELECT * FROM computer WHERE ID=42");
+if(rs.next())
+{
 String computer=rs.getString("name");
 System.out.println(computer);
+}
 /*
 while (rs.next()) {
 int x = rs.getInt("ID");
@@ -89,15 +91,14 @@ public static void viewCompany(Connection con, String dbName)
 
 	    Statement stmt = null;
 	    String query =
-	        "select ID, NAME" +
-	        "from " + dbName;
+	        "select id, name from company";
 
 	    try {
 	        stmt = con.createStatement();
 	        ResultSet rs = stmt.executeQuery(query);
 	        while (rs.next()) {
-	            String companyName = rs.getString("NAME");
-	            int companyID = rs.getInt("COMPANY_ID");
+	            String companyName = rs.getString("name");
+	            int companyID = rs.getInt("id");
 	            System.out.println(companyName + "\t" 
 	                           			+ companyID);
 	        }
@@ -112,8 +113,7 @@ public static void viewComputer(Connection con, String dbName)
 
 	    Statement stmt = null;
 	    String query =
-	        "select ID, NAME, COMPANY_ID, " +
-	        "from " + dbName;
+	        "select ID, NAME, COMPANY_ID from computer";
 
 	    try {
 	        stmt = con.createStatement();
@@ -134,12 +134,12 @@ public static void viewComputer(Connection con, String dbName)
 
 
 
-public void insertComputer(String computerName, int companyID,
+public void insertComputer(Connection con,String computerName, int companyID,
         int computerID, Date intro, Date disco)
 throws SQLException {
-String dbName="COMPUTER";
-Connection con = null;
-Statement stmt = null;
+String dbName="computer";
+
+Statement stmt=null;
 try {
 stmt = con.createStatement(
 ResultSet.TYPE_SCROLL_SENSITIVE,
@@ -167,8 +167,27 @@ if (stmt != null) { stmt.close();
 
 public static void main(String []args)
 		{
+	Connection con;
+	long millis=System.currentTimeMillis();  
+    java.sql.Date intro=new java.sql.Date(millis);  
+	Date disco=new java.sql.Date(millis);
+	try {
+		con = DriverManager.getConnection(
+		        "jdbc:mysql://localhost:3306/computer-database-db?serverTimezone=UTC",
+		        "root", "root");
+	
+	String dbName="company";
 			Example r= new Example();
 			r.connectToAndQueryDatabase("root", "root");
+			
+			viewCompany(con, dbName);
+			viewComputer(con,dbName);
+			r.insertComputer(con,"XXX", 26, 666,intro, disco);
+			viewComputer(con,dbName);
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 
 }	
 }
