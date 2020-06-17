@@ -10,10 +10,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-import mapper.SqlConnector;
 import persistence.ComputerDAO;
+import sqlShenanigans.SqlConnector;
 
 public class CLI {
 
@@ -81,7 +82,7 @@ public class CLI {
 		    
 		    
 		    int id = 0;
-		    String name;
+		    String name=null;
 		    int c_id=0;
 		    String intr;
 		    String disc;
@@ -167,32 +168,62 @@ public class CLI {
 		      System.out.println("'Update a computer' selected:");
 		      System.out.println("Please indicate which computer you wish to update using it's id ->");
 		      Scanner five = new Scanner(System.in);
-		      id=five.nextInt();
-		      int subc;
+		  	try {
+		  		 id=five.nextInt();
+		  		}
+		  		catch(InputMismatchException e)
+				{
+			    	five.next();
+			        System.out.println("That’s not a valid ID (integer required) => Update Failed");
+			        System.out.println();
+			        break;
+				}
+			    	
+			    
+		  		
 		      System.out.println("Please input '1' if you wish to update "+id +"'s Computer name or '2' if you wish to update "+id +"'s discontinued date ->");
+		      int subc;
 		      subc=five.nextInt();
-		      five.close();
 		      switch(subc)
 		      {
 		      case 1:
-		    	  System.out.println("Please input a new name for computer"+id+":");
+		    	  System.out.println("Please input a new name for Computer id="+id+":");
 		    	  Scanner subfive= new Scanner(System.in);
+		    	  
+		    	  try {
 		    	  name=subfive.next();
-		    	  ComputerDAO.updateComputerName(con, name, id);
-		    	  System.out.println("Your modification has been carried out (hopefully, maybe, probably, definitely)");
+		    	  ComputerDAO.updateComputerName(con, name, id);   
+		    	  System.out.println("Your modification has been carried out (hopefully, maybe, probably, definitely...unless "+id+ " didn't even exist to begin with)");
 		    	  System.out.println("");
+		    	  }
+		    	  catch(NoSuchElementException e)
+		    	  {
+		    		  five.next();
+		    		  five.close();
+		    		  System.out.println("This computer is not present in the database");
+		    	  }
+		    		  
 		    	  break;
 		      case 2:
-		    	  System.out.println("Please input a new discontinued date for computer"+id+":");
+		    	  System.out.println("Please input a new discontinued date for Computer "+id+":");
 		    	  Scanner five2= new Scanner(System.in);
 		    	  disc=five2.next();
 		    	  DateTimeFormatter formatter1= DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
+		    	  try {
 		    	  LocalDate date1=LocalDate.parse(disc, formatter1);
 		    	  Date sqlDate1=Date.valueOf(date1);
-		    	  ComputerDAO.updateComputerDisc(con, sqlDate1, id);
+		    	  ComputerDAO.updateComputerDisc(con, sqlDate1, id);	
 		    	  five2.close();
 		    	  System.out.println("Your modification has been carried out (hopefully, maybe, probably, definitely)");
 		    	  System.out.println("");
+		    	  }
+
+		    		  catch(DateTimeParseException e )
+			    	  {
+			    		  System.out.println("Sorry,there was an issue with the format of your discontinued date input. Update failed");
+					        System.out.println();
+			    	  }
+		    	  
 		    	  break;
 		      }
 		      break;
@@ -202,10 +233,20 @@ public class CLI {
 		      System.out.println("'Delete a computer' selected:");
 		      System.out.println("Please indicate which computer you wish to delete using it's id ->");
 		      Scanner six=new Scanner(System.in);
-		      id=six.nextInt();
-		      ComputerDAO.deleteComputer(con,id);
-		      six.close();
-		      System.out.println("Computer " +id+" has been deleted (hopefully, maybe, probably, definitely)");
+		      try {
+		    	  id=six.nextInt();
+		    	  //six.close();
+			      ComputerDAO.deleteComputer(con,id);		
+			      System.out.println("Computer " +id+" has been deleted (hopefully, maybe, probably, definitely...unless " +id+" didn't even exist to begin with)");
+			      
+			  		}
+			  		catch(InputMismatchException e)
+					{
+				    	six.next();
+				        System.out.println("That’s not a valid ID (integer required) => Deletion Failed");
+				        System.out.println();
+				        break;
+					}      
 		      break;
 	   
 	    

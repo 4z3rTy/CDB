@@ -1,6 +1,8 @@
 package persistence;
 import java.sql.*;
 
+import sqlShenanigans.Xeptions;
+
 public class ComputerDAO {
 	static String tbName="computer";
 

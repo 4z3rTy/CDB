@@ -1,4 +1,4 @@
-package mapper;
+package sqlShenanigans;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 
-import mapper.SqlConnector;
+import sqlShenanigans.SqlConnector;
 
 public class DAOTest {
 

@@ -1,4 +1,4 @@
-package persistence;
+package sqlShenanigans;
 
 import java.sql.SQLException;
 
