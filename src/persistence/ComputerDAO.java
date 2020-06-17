@@ -1,23 +1,33 @@
 package persistence;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import model.Computer;
 
 import sqlShenanigans.Xeptions;
+import ui.Page;
 
 public class ComputerDAO {
 	static String tbName="computer";
 
 	
-	public static void viewComputer(Connection con)
-		    throws SQLException {
+	public List<Computer> viewComputer(Connection con) throws SQLException {
 		
 		    Statement stmt = null;
 		    String query =
 		        "select id, name, company_id from "+ ComputerDAO.tbName;
+		    Computer computer=null;
+		    List<Computer> computers = new ArrayList<Computer>();
 
 		    try {
 		        stmt = con.createStatement();
 		        ResultSet rs = stmt.executeQuery(query);
+		        computer=new Computer();
 		        while (rs.next()) {
+		        	computer.setId(rs.getInt("id"));
+		        	computer.setName(rs.getString("name"));
+		        	computers.add(computer);
 		            String computerName = rs.getString("name");
 		            int ID = rs.getInt("id");
 		            int companyID = rs.getInt("company_id");
@@ -29,7 +39,62 @@ public class ComputerDAO {
 		    } finally {
 		        if (stmt != null) { stmt.close(); }
 		    }
+		    return computers;
 	}
+	
+	public int countDb(Connection con) throws SQLException
+	{
+		Statement stmt =null;
+		int count=-1;
+		String query =
+		        "select COUNT(*) from computer";
+		try {
+        stmt = con.createStatement();
+        ResultSet rs = stmt.executeQuery(query);
+        rs.next();
+        count=rs.getInt(1);
+		}
+		 catch (SQLException e ) {
+		    Xeptions.printSQLException(e);
+		} finally {
+		    if (stmt != null) { stmt.close(); }
+		}
+    return count;
+}
+	
+	
+	public List<Computer> viewSomeComputer(Connection con, Page page) throws SQLException {
+		
+		 PreparedStatement pstmt = null;   
+	    
+	    String query =
+	        "select * FROM computer ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+	    Computer computer=null;
+	    List<Computer> computers = new ArrayList<Computer>();
+
+	    try {
+	        pstmt = con.prepareStatement(query);
+	        pstmt.setInt(2, page.getAmount());
+            pstmt.setInt(1, page.getPages()*page.getAmount());
+	        ResultSet rs = pstmt.executeQuery(query);
+	        computer=new Computer();
+	        while (rs.next()) {
+	        	computer.setId(rs.getInt("id"));
+	        	computer.setName(rs.getString("name"));
+	        	computers.add(computer);
+	            String computerName = rs.getString("name");
+	            int ID = rs.getInt("id");
+	            int companyID = rs.getInt("company_id");
+	            System.out.println(computerName + "\t" + ID +
+	                               "\t" + companyID);
+	        }
+	    } catch (SQLException e ) {
+	        Xeptions.printSQLException(e);
+	    } finally {
+	        if (pstmt != null) { pstmt.close(); }
+	    }
+	    return computers;
+}
 	
 	
     public static void updateComputerName(Connection con,String newName, int computerID)
@@ -121,12 +186,11 @@ public class ComputerDAO {
         }
     
 
-    public static void viewCompDetails(Connection con,int computerID)
-        throws SQLException {
+    public Computer viewCompDetails(Connection con,int computerID) throws SQLException {
 
        
         PreparedStatement pstmt = null;   
-      
+        Computer computer=null;
         try {
 
             pstmt = con.prepareStatement(
@@ -135,8 +199,17 @@ public class ComputerDAO {
 
             pstmt.setInt(1, computerID); 
     	        ResultSet rs = pstmt.executeQuery();
+    	        
+    	        computer = new Computer();
     	        while (rs.next()) {
-    	            String computerName = rs.getString("name");
+    	        	computer.setId(rs.getInt("id"));
+    				computer.setName(rs.getString("name"));
+    				computer.setIntro(rs.getDate("introduced"));
+    				computer.setDisco(rs.getDate("discontinued"));
+    	        	computer.setC_Id(rs.getInt("id"));
+    	        	
+    	        	
+    	        	String computerName = rs.getString("name");
     	            int ID = rs.getInt("id");
     	            int companyID = rs.getInt("company_id");
     	            Date in=rs.getDate("introduced");
@@ -149,6 +222,7 @@ public class ComputerDAO {
         finally {
             if (pstmt != null) pstmt.close();
         }
+        return computer;
  }
     
 }

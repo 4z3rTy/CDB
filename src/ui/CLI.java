@@ -13,6 +13,7 @@ import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+import persistence.CompanyDAO;
 import persistence.ComputerDAO;
 import sqlShenanigans.SqlConnector;
 
@@ -46,6 +47,8 @@ public class CLI {
 	    Scanner sc = new Scanner(System.in);
 		boolean running=true;
 		int option = 0;
+		CompanyDAO any=new CompanyDAO();
+		ComputerDAO Comp=new ComputerDAO();
 		
 
 	    while (running)
@@ -84,8 +87,8 @@ public class CLI {
 		    int id = 0;
 		    String name=null;
 		    int c_id=0;
-		    String intr;
-		    String disc;
+		    String intr = null;
+		    String disc = null;
 		    
 		    SqlConnector server=SqlConnector.getInstance("root", "root");
 		    Connection con=server.getCo();
@@ -97,14 +100,14 @@ public class CLI {
 	    case 1:
 	      System.out.println("'List all computers' selected ->");
 	      System.out.println("");
-	      persistence.ComputerDAO.viewComputer(con);
+	      Comp.viewComputer(con);
 	      break;
 	    
 	    
 	    case 2:
 	    	System.out.println("'List all companies' selected ->");
 	    	System.out.println("");
-	    	persistence.CompanyDAO.viewCompany(con);
+	    	any.viewCompany(con);
 	      break;
 	    
 	    
@@ -114,17 +117,17 @@ public class CLI {
 	      Scanner three = new Scanner(System.in);
 	  	try {
 	  		id=three.nextInt();
+	  		//three.close();
 	  		System.out.println("Attempting to fetch computer details for computer ID="+id);
-		    	}
+		    Comp.viewCompDetails(con, id); 
+		    }
 
 		    catch(InputMismatchException e)
 			{
 		    	three.next();
 		        System.out.println("That’s not an integer => ");
 		        System.out.println();
-			}
-	  	  three.close();
-	      ComputerDAO.viewCompDetails(con, id);  
+			} 
 	      break;
 	    
 	    
@@ -132,17 +135,20 @@ public class CLI {
 		      System.out.println("'Create a computer' selected:");
 		      System.out.println("Please indicate the desired attributes of the computer you wish to create (name, date introduced (yyyy-MM-dd), date discontinued (yyyy-MM-dd) & company id) ->");
 		      Scanner four = new Scanner(System.in);
+		      try {
 		      name=four.next();
 		      intr=four.next(); 
 		      disc=four.next();
 		      c_id=four.nextInt();
+		      }
+		      catch(InputMismatchException e)
+		      {
+		    	  System.out.println("Sorry,there was an issue with the number of inputs. Creation aborted.");
+		      }
 		      System.out.println("Attempting to create computer with following attributes name=" +name);
 		      System.out.println("date introduced=" +intr);
 		      System.out.println("date discontinued=" +disc);
 		      System.out.println("company ID=" +c_id);
-	/*	 TODO     if(four.next()==null)
-		      {
-		    	  four.close();*/
 	    	  DateTimeFormatter formatter= DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
 	    	  try {
 	    	  LocalDate date=LocalDate.parse(disc, formatter);
@@ -153,7 +159,7 @@ public class CLI {
 	    	  }
 	    	  catch(DateTimeParseException e )
 	    	  {
-	    		  System.out.println("Sorry,there was an issue with the format of either or both of your dates.");
+	    		  System.out.println("Sorry,there was an issue with the format of either or both of the dates input.");
 			        System.out.println();
 	    	  }
 	    	
@@ -213,7 +219,7 @@ public class CLI {
 		    	  LocalDate date1=LocalDate.parse(disc, formatter1);
 		    	  Date sqlDate1=Date.valueOf(date1);
 		    	  ComputerDAO.updateComputerDisc(con, sqlDate1, id);	
-		    	  five2.close();
+		    	  //five2.close();
 		    	  System.out.println("Your modification has been carried out (hopefully, maybe, probably, definitely)");
 		    	  System.out.println("");
 		    	  }
@@ -253,11 +259,12 @@ public class CLI {
 	    case 7:
 	      System.out.println("'Exit' selected...bye bye!");
 	      sc.close();
+	      
 	      running=false;
 	      break; 
 	    default:
 	    	System.out.println("The option you selected is not currently available, please try again :) ");
-	    	break;  // This break is not really necessary
+	    	break;  
 	    }
 		    	
 

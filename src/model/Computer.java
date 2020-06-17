@@ -11,7 +11,7 @@ public class Computer {
 		Date discontinued;
 		
 		
-	
+	public Computer() {}
 	
 	public Computer(int id) {
 		this.id=id;
@@ -58,12 +58,23 @@ public class Computer {
 		this.id=newId;
 		
 	}
+	
+	public void setC_Id(int newId)
+	{
+		// Add Exception to prevent setting the id to NULL
+		this.company_id=newId;
+		
+	}
 	public void setName(String newName)
 	{
 		this.name=newName;
 		
 	}
 	public void setDisco(Date newDate)
+	{
+		this.discontinued=newDate;
+	}
+	public void setIntro(Date newDate)
 	{
 		this.discontinued=newDate;
 	}
