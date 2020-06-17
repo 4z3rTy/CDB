@@ -13,8 +13,9 @@ import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-import persistence.CompanyDAO;
 import persistence.ComputerDAO;
+import service.CompanyS;
+import service.ComputerS;
 import sqlShenanigans.SqlConnector;
 
 public class CLI {
@@ -42,13 +43,22 @@ public class CLI {
 
 
 	  public static void main(String[] args) throws IOException, SQLException, ParseException {
-	    // Local variable
-	    //int swValue;
+	  
 	    Scanner sc = new Scanner(System.in);
 		boolean running=true;
 		int option = 0;
-		CompanyDAO any=new CompanyDAO();
+		CompanyS anyS=new CompanyS();
 		ComputerDAO Comp=new ComputerDAO();
+		ComputerS compS=new ComputerS();
+		 
+		int id = 0;
+		String name=null;
+		int c_id=0;
+		String intr = null;
+		String disc = null;
+		    
+		SqlConnector server=SqlConnector.getInstance("root", "root");
+		Connection con=server.getCo();
 		
 
 	    while (running)
@@ -82,16 +92,7 @@ public class CLI {
 
 		   
 	    
-		    
-		    
-		    int id = 0;
-		    String name=null;
-		    int c_id=0;
-		    String intr = null;
-		    String disc = null;
-		    
-		    SqlConnector server=SqlConnector.getInstance("root", "root");
-		    Connection con=server.getCo();
+		
 	    
 	    // Switch construct
 	    switch (option) {
@@ -100,14 +101,14 @@ public class CLI {
 	    case 1:
 	      System.out.println("'List all computers' selected ->");
 	      System.out.println("");
-	      Comp.viewComputer(con);
+	      compS.getAllComputer(con);
 	      break;
 	    
 	    
 	    case 2:
 	    	System.out.println("'List all companies' selected ->");
 	    	System.out.println("");
-	    	any.viewCompany(con);
+	    	anyS.getAllCompanies(con);
 	      break;
 	    
 	    

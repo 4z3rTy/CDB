@@ -13,15 +13,18 @@ public class DAOTest {
     	SqlConnector server=SqlConnector.getInstance("root", "root");
 	    Connection con=server.getCo();
 	    ComputerDAO Comp= new ComputerDAO();
-	    Page page=new Page();
-		page.setAmount(5);
-		page.setPages(1);
-		int wow=-2;
+	    CompanyDAO any= new CompanyDAO();
+	    Page page=new Page(1);
     	
     	try {
-    		wow=Comp.countDb(con);
-    		System.out.println(wow);
+    		page.setMax(page.countDb(con,"computer"));
+    		page.calcPages(page.getAmount(),page.getMax());
+    		
     		Comp.viewSomeComputer(con, page);
+    		page.setMax(page.countDb(con,"computer"));
+    		page.calcPages(page.getAmount(),page.getMax());
+    		any.viewSomeCompanies(con, page);
+    		
 	    	con.close();
 		
     		}

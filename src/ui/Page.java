@@ -1,14 +1,46 @@
 package ui;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import sqlShenanigans.Xeptions;
+
 public class Page {
 	 int itemsNb=10;
 	 int maxItems;
-	 int pagesNb;
+	 int pageTotal;
+	 int currentPage;
 	 
-	 public void page(int amount)
+	 public Page(int userChoice)
 	 {
-		 this.itemsNb=amount;
+		 this.currentPage=userChoice;
 	 }
+	 
+	 
+	 public int countDb(Connection con,String tbName) throws SQLException
+		{
+			Statement stmt =null;
+			int count=-1;
+			String query =
+			        "select COUNT(*) from "+tbName;
+			try {
+	        stmt = con.createStatement();
+	        ResultSet rs = stmt.executeQuery(query);
+	        rs.next();
+	        count=rs.getInt(1);
+			}
+			 catch (SQLException e ) {
+			    Xeptions.printSQLException(e);
+			} finally {
+			    if (stmt != null) { stmt.close(); }
+			}
+	    return count;
+	}
+	 
+	 
+	 
 	
 	public int getAmount()
 	{
@@ -30,14 +62,24 @@ public class Page {
 		this.maxItems=db_max;
 	}
 	
-	public int getPages()
+	public int getTotal()
 	{
-		return pagesNb;
+		return pageTotal;
 	}
 	
-	public void setPages(int p)
+	public void setTotal(int p)
 	{
-		this.pagesNb=p;
+		this.pageTotal=p;
+	}
+	
+	public int getPage()
+	{
+		return currentPage;
+	}
+	
+	public void setPage(int p)
+	{
+		 this.currentPage=p;
 	}
 	
 	public void calcPages(int items,int max)
@@ -51,6 +93,6 @@ public class Page {
 		{
 			result=0;
 		}
-		this.pagesNb=(max/items)+result;
+		this.pageTotal=(max/items)+result;
 	}
 }

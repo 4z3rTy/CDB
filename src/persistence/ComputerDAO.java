@@ -42,41 +42,25 @@ public class ComputerDAO {
 		    return computers;
 	}
 	
-	public int countDb(Connection con) throws SQLException
-	{
-		Statement stmt =null;
-		int count=-1;
-		String query =
-		        "select COUNT(*) from computer";
-		try {
-        stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery(query);
-        rs.next();
-        count=rs.getInt(1);
-		}
-		 catch (SQLException e ) {
-		    Xeptions.printSQLException(e);
-		} finally {
-		    if (stmt != null) { stmt.close(); }
-		}
-    return count;
-}
 	
 	
 	public List<Computer> viewSomeComputer(Connection con, Page page) throws SQLException {
 		
 		 PreparedStatement pstmt = null;   
 	    
-	    String query =
-	        "select * FROM computer ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 	    Computer computer=null;
 	    List<Computer> computers = new ArrayList<Computer>();
 
 	    try {
-	        pstmt = con.prepareStatement(query);
-	        pstmt.setInt(2, page.getAmount());
-            pstmt.setInt(1, page.getPages()*page.getAmount());
-	        ResultSet rs = pstmt.executeQuery(query);
+	        pstmt = con.prepareStatement("SELECT * FROM "+ComputerDAO.tbName+ " ORDER BY id LIMIT ? OFFSET ?");
+	        
+	        int limit=page.getAmount();
+	        int offset=(page.getPage()-1)*page.getAmount();
+	        pstmt.setInt(1, limit);
+	        pstmt.setInt(2, offset);
+	        
+	        
+	        ResultSet rs = pstmt.executeQuery();
 	        computer=new Computer();
 	        while (rs.next()) {
 	        	computer.setId(rs.getInt("id"));
