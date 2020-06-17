@@ -4,24 +4,22 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 
-import mapper.SqlShenanigans;
+import mapper.SqlConnector;
 
-public class SqlTest {
+public class DAOTest {
 
 	public static void main(String[] args) {
     	
-    	OnCompany r= new OnCompany();
-    	OnComputer s=new OnComputer();
-    	SqlShenanigans server=new SqlShenanigans("root","root");
+    	SqlConnector server=SqlConnector.getInstance("root", "root");
 	    Connection con=server.getCo();
 	    Date d=new Date(0);
 	    
     	
     	try {
-    		OnComputer.insertComputer(con,"XXX",42,d,d);
-	    	//OnComputer.viewComputer(con);
-	    	//OnComputer.viewCompDetails(con, 574);
-	    	//OnComputer.deleteComputer(con, 666);
+    		ComputerDAO.insertComputer(con,"XXX",42,d,d);
+	    	ComputerDAO.viewComputer(con);
+	    	ComputerDAO.viewCompDetails(con, 574);
+	    	ComputerDAO.deleteComputer(con, 666);
 	    	con.close();
 		
     		}

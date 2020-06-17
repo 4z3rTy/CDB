@@ -7,11 +7,13 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.InputMismatchException;
 import java.util.Locale;
 import java.util.Scanner;
 
-import mapper.SqlShenanigans;
-import persistence.OnComputer;
+import mapper.SqlConnector;
+import persistence.ComputerDAO;
 
 public class CLI {
 
@@ -42,7 +44,7 @@ public class CLI {
 	    //int swValue;
 	    Scanner sc = new Scanner(System.in);
 		boolean running=true;
-		int option;
+		int option = 0;
 		
 
 	    while (running)
@@ -62,18 +64,29 @@ public class CLI {
 		    System.out.println("===============================================");
 		    System.out.println("");
 		    System.out.println(" Please select the (next) option you are interested in:  ");
+		    	try {
 		    option=sc.nextInt();
+		    	}
+
+		    catch(InputMismatchException e)
+			{
+		    	sc.next();
+		        System.out.print("That’s not an integer => ");
+		        System.out.print("");
+			}
+		    
+
 		   
+	    
 		    
 		    
-		    
-		    int id;
+		    int id = 0;
 		    String name;
-		    int c_id;
+		    int c_id=0;
 		    String intr;
 		    String disc;
 		    
-		    SqlShenanigans server=new SqlShenanigans("root","root");
+		    SqlConnector server=SqlConnector.getInstance("root", "root");
 		    Connection con=server.getCo();
 	    
 	    // Switch construct
@@ -83,14 +96,14 @@ public class CLI {
 	    case 1:
 	      System.out.println("'List all computers' selected ->");
 	      System.out.println("");
-	      persistence.OnComputer.viewComputer(con);
+	      persistence.ComputerDAO.viewComputer(con);
 	      break;
 	    
 	    
 	    case 2:
 	    	System.out.println("'List all companies' selected ->");
 	    	System.out.println("");
-	    	persistence.OnCompany.viewCompany(con);
+	    	persistence.CompanyDAO.viewCompany(con);
 	      break;
 	    
 	    
@@ -98,33 +111,55 @@ public class CLI {
 	      System.out.println("'Show computer details' selected:");
 	      System.out.println("Please indicate which computer you are interested in using its id ->");
 	      Scanner three = new Scanner(System.in);
-	      id=three.nextInt();
-	      System.out.println("Attempting to fetch computer details for computer ID="+id);
-	      System.out.println(id);
-	      OnComputer.viewCompDetails(con, id);  
+	  	try {
+	  		id=three.nextInt();
+	  		System.out.println("Attempting to fetch computer details for computer ID="+id);
+		    	}
+
+		    catch(InputMismatchException e)
+			{
+		    	three.next();
+		        System.out.println("That’s not an integer => ");
+		        System.out.println();
+			}
+	  	  three.close();
+	      ComputerDAO.viewCompDetails(con, id);  
 	      break;
 	    
 	    
 	    case 4:
 		      System.out.println("'Create a computer' selected:");
-		      System.out.println("Please indicate the desired attributes of the computer you wish to create (name, date introduced, date discontinued & company id) ->");
+		      System.out.println("Please indicate the desired attributes of the computer you wish to create (name, date introduced (yyyy-MM-dd), date discontinued (yyyy-MM-dd) & company id) ->");
 		      Scanner four = new Scanner(System.in);
 		      name=four.next();
-		      intr=four.next();  // TODO Have to format to get a correct sql Date at a later point. Probably in the Mapper would be ideal.
+		      intr=four.next(); 
 		      disc=four.next();
 		      c_id=four.nextInt();
 		      System.out.println("Attempting to create computer with following attributes name=" +name);
 		      System.out.println("date introduced=" +intr);
 		      System.out.println("date discontinued=" +disc);
 		      System.out.println("company ID=" +c_id);
-	    	
+	/*	 TODO     if(four.next()==null)
+		      {
+		    	  four.close();*/
 	    	  DateTimeFormatter formatter= DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
+	    	  try {
 	    	  LocalDate date=LocalDate.parse(disc, formatter);
 	    	  Date sqlDate=Date.valueOf(date);
 	    	  LocalDate date2=LocalDate.parse(intr, formatter);
 	    	  Date sqlDate2=Date.valueOf(date2);
-	    	  
-	    	  OnComputer.insertComputer(con, name, c_id, sqlDate2, sqlDate);
+	    	  ComputerDAO.insertComputer(con, name, c_id, sqlDate2, sqlDate);
+	    	  }
+	    	  catch(DateTimeParseException e )
+	    	  {
+	    		  System.out.println("Sorry,there was an issue with the format of either or both of your dates.");
+			        System.out.println();
+	    	  }
+	    	
+		/*      else {
+		    	  System.out.println("Sorry,too many arguments. Insertion has failed");
+		      }
+	    	  */
 		      break;
 	    
 	   
@@ -136,13 +171,14 @@ public class CLI {
 		      int subc;
 		      System.out.println("Please input '1' if you wish to update "+id +"'s Computer name or '2' if you wish to update "+id +"'s discontinued date ->");
 		      subc=five.nextInt();
+		      five.close();
 		      switch(subc)
 		      {
 		      case 1:
 		    	  System.out.println("Please input a new name for computer"+id+":");
 		    	  Scanner subfive= new Scanner(System.in);
 		    	  name=subfive.next();
-		    	  OnComputer.updateComputerName(con, name, id);
+		    	  ComputerDAO.updateComputerName(con, name, id);
 		    	  System.out.println("Your modification has been carried out (hopefully, maybe, probably, definitely)");
 		    	  System.out.println("");
 		    	  break;
@@ -153,7 +189,8 @@ public class CLI {
 		    	  DateTimeFormatter formatter1= DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
 		    	  LocalDate date1=LocalDate.parse(disc, formatter1);
 		    	  Date sqlDate1=Date.valueOf(date1);
-		    	  OnComputer.updateComputerDisc(con, sqlDate1, id);
+		    	  ComputerDAO.updateComputerDisc(con, sqlDate1, id);
+		    	  five2.close();
 		    	  System.out.println("Your modification has been carried out (hopefully, maybe, probably, definitely)");
 		    	  System.out.println("");
 		    	  break;
@@ -166,7 +203,8 @@ public class CLI {
 		      System.out.println("Please indicate which computer you wish to delete using it's id ->");
 		      Scanner six=new Scanner(System.in);
 		      id=six.nextInt();
-		      OnComputer.deleteComputer(con,id);
+		      ComputerDAO.deleteComputer(con,id);
+		      six.close();
 		      System.out.println("Computer " +id+" has been deleted (hopefully, maybe, probably, definitely)");
 		      break;
 	   
@@ -180,122 +218,9 @@ public class CLI {
 	    	System.out.println("The option you selected is not currently available, please try again :) ");
 	    	break;  // This break is not really necessary
 	    }
-	  }
-	  }
-	}
+		    	
 
-	//**********************************************************
-	//**********************************************************
-	//Program: Keyin
-	//Reference: Session 20
-	//Topics:
-	// 1. Using the read() method of the ImputStream class
-//	    in the java.io package
-	// 2. Developing a class for performing basic console
-//	    input of character and numeric types
-	//**********************************************************
-	//**********************************************************
+	    }}
+}
 
-	class Keyin {
 
-	  //*******************************
-	  //   support methods
-	  //*******************************
-	  //Method to display the user's prompt string
-	  public static void printPrompt(String prompt) {
-	    System.out.print(prompt + " ");
-	    System.out.flush();
-	  }
-
-	  //Method to make sure no data is available in the
-	  //input stream
-	  public static void inputFlush() {
-	    int dummy;
-	    int bAvail;
-
-	    try {
-	      while ((System.in.available()) != 0)
-	        dummy = System.in.read();
-	    } catch (java.io.IOException e) {
-	      System.out.println("Input error");
-	    }
-	  }
-
-	  //********************************
-	  //  data input methods for
-	  //string, int, char, and double
-	  //********************************
-	  public static String inString(String prompt) {
-	    inputFlush();
-	    printPrompt(prompt);
-	    return inString();
-	  }
-
-	  public static String inString() {
-	    int aChar;
-	    String s = "";
-	    boolean finished = false;
-
-	    while (!finished) {
-	      try {
-	        aChar = System.in.read();
-	        if (aChar < 0 || (char) aChar == '\n')
-	          finished = true;
-	        else if ((char) aChar != '\r')
-	          s = s + (char) aChar; // Enter into string
-	      }
-
-	      catch (java.io.IOException e) {
-	        System.out.println("Input error");
-	        finished = true;
-	      }
-	    }
-	    return s;
-	  }
-
-	  public static int inInt(String prompt) {
-	    while (true) {
-	      inputFlush();
-	      printPrompt(prompt);
-	      try {
-	        return Integer.valueOf(inString().trim()).intValue();
-	      }
-
-	      catch (NumberFormatException e) {
-	        System.out.println("Invalid input. Not an integer");
-	      }
-	    }
-	  }
-
-	  public static char inChar(String prompt) {
-	    int aChar = 0;
-
-	    inputFlush();
-	    printPrompt(prompt);
-
-	    try {
-	      aChar = System.in.read();
-	    }
-
-	    catch (java.io.IOException e) {
-	      System.out.println("Input error");
-	    }
-	    inputFlush();
-	    return (char) aChar;
-	  }
-
-	  public static double inDouble(String prompt) {
-	    while (true) {
-	      inputFlush();
-	      printPrompt(prompt);
-	      try {
-	        return Double.valueOf(inString().trim()).doubleValue();
-	      }
-
-	      catch (NumberFormatException e) {
-	        System.out
-	            .println("Invalid input. Not a floating point number");
-	      }
-	    }
-	  }
-	}

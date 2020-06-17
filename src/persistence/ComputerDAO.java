@@ -1,8 +1,7 @@
 package persistence;
 import java.sql.*;
-import java.time.LocalDate;
 
-public class OnComputer {
+public class ComputerDAO {
 	static String tbName="computer";
 
 	
@@ -11,7 +10,7 @@ public class OnComputer {
 		
 		    Statement stmt = null;
 		    String query =
-		        "select id, name, company_id from "+ OnComputer.tbName;
+		        "select id, name, company_id from "+ ComputerDAO.tbName;
 
 		    try {
 		        stmt = con.createStatement();

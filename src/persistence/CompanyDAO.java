@@ -1,7 +1,7 @@
 package persistence;
 import java.sql.*;
 
-public class OnCompany{
+public class CompanyDAO{
 	static String tbName="company";
 
 
