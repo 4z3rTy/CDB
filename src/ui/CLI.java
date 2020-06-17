@@ -20,42 +20,22 @@ import sqlShenanigans.SqlConnector;
 
 public class CLI {
 
-	/*
-	Java Programming for Engineers
-	Julio Sanchez
-	Maria P. Canton
-
-
-	ISBN: 0849308100
-	Publisher: CRC Press
-	*/
-
-
-	// File name: MenuDemo.java
-	//Reference: Chapter 9
-	//
-	//Java program to demonstrate menu selection
-	//Topics:
-	// 1. Using the switch construct
-	//
-	//Requires:
-	// 1. Keyin class in the current directory
-
-
 	  public static void main(String[] args) throws IOException, SQLException, ParseException {
 	  
 	    Scanner sc = new Scanner(System.in);
-		boolean running=true;
+		
+	    boolean running=true;
 		int option = 0;
+		int id = 0;
+		int c_id=0;
+		String name=null;
+		String intr = null;
+		String disc = null;
+		
 		CompanyS anyS=new CompanyS();
 		ComputerDAO Comp=new ComputerDAO();
 		ComputerS compS=new ComputerS();
-		 
-		int id = 0;
-		String name=null;
-		int c_id=0;
-		String intr = null;
-		String disc = null;
+		
 		    
 		SqlConnector server=SqlConnector.getInstance("root", "root");
 		Connection con=server.getCo();
@@ -75,20 +55,21 @@ public class CLI {
 		    System.out.println("|        5. Update a computer                 |");
 		    System.out.println("|        6. Delete a computer                 |");
 		    System.out.println("|        7. Exit                              |");
+		    System.out.println("|        8. List some or all of the computers |");
 		    System.out.println("===============================================");
 		    System.out.println("");
 		    System.out.println(" Please select the (next) option you are interested in:  ");
 		    	try {
-		    option=sc.nextInt();
-		    	}
+		    			option=sc.nextInt();
+		    		}
 
-		    catch(InputMismatchException e)
-			{
-		    	sc.next();
-		        System.out.print("That’s not an integer => ");
-		        System.out.print("");
-			}
-		    
+			    catch(InputMismatchException e)
+				{
+			    	sc.next();
+			        System.out.print("That’s not an integer => ");
+			        System.out.print("");
+				}
+			    
 
 		   
 	    
@@ -212,17 +193,23 @@ public class CLI {
 		    		  
 		    	  break;
 		      case 2:
-		    	  System.out.println("Please input a new discontinued date for Computer "+id+":");
+		    	  System.out.println("Please input a new introduced & discontinued date for Computer "+id+":");
 		    	  Scanner five2= new Scanner(System.in);
+		    	  intr=five2.next();
 		    	  disc=five2.next();
 		    	  DateTimeFormatter formatter1= DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
 		    	  try {
-		    	  LocalDate date1=LocalDate.parse(disc, formatter1);
-		    	  Date sqlDate1=Date.valueOf(date1);
-		    	  ComputerDAO.updateComputerDisc(con, sqlDate1, id);	
-		    	  //five2.close();
-		    	  System.out.println("Your modification has been carried out (hopefully, maybe, probably, definitely)");
-		    	  System.out.println("");
+			    	  LocalDate date1=LocalDate.parse(disc, formatter1);
+			    	  Date sqlDate1=Date.valueOf(date1);	
+			    	  LocalDate date2=LocalDate.parse(intr, formatter1);
+			    	  Date sqlDate2=Date.valueOf(date2);
+			    	  
+			    	  //five2.close();
+			    	  if(ComputerDAO.updateComputerDisc(con, sqlDate2,sqlDate1, id)==1)
+			    	  {
+			    	  System.out.println("Your modification has been carried out (hopefully, maybe, probably, definitely)");
+			    	  System.out.println("");
+			    	  }
 		    	  }
 
 		    		  catch(DateTimeParseException e )
@@ -263,6 +250,25 @@ public class CLI {
 	      
 	      running=false;
 	      break; 
+	      
+	    case 8:
+	    	System.out.println("List some or all of the computers in the db ->");
+	    	System.out.println("Please indicate which page you wish to see:");
+		      Scanner eight=new Scanner(System.in);
+		      try {
+			  		id=eight.nextInt();
+			  		//three.close();
+			  		System.out.println("Attempting to display page"+id);
+				    compS.viewSomeComputer(con, id);
+				    }
+
+				    catch(InputMismatchException e)
+					{
+				    	eight.next();
+				        System.out.println("That’s not an integer => ");
+				        System.out.println();
+					} 
+		   break;
 	    default:
 	    	System.out.println("The option you selected is not currently available, please try again :) ");
 	    	break;  

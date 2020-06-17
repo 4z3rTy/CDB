@@ -101,24 +101,34 @@ public class ComputerDAO {
         }
     }
     
-    public static void updateComputerDisc(Connection con,Date date, int computerID)
+    public static int updateComputerDisc(Connection con,Date intr, Date disc, int computerID)
             throws SQLException {
-
+    		int bool=0;
             PreparedStatement pstmt = null;   
           
             try {
              
 
                 pstmt = con.prepareStatement(
-                            "UPDATE computer SET discontinued=? WHERE id=?");
+                            "UPDATE computer SET introduced=?,discontinued=? WHERE id=?");
 
-                pstmt.setDate(1, date);
-                pstmt.setInt(2, computerID);
+                if(disc.compareTo(intr)>0)
+                {
+                pstmt.setDate(1, intr);
+                pstmt.setDate(2, disc);
+                pstmt.setInt(3, computerID);
                 pstmt.executeUpdate();
+                bool=1;
+                }
+                else
+                {
+                	System.out.println("Sorry there seems to be an incoherence with your dates input. Creation aborted");
+                }
             }
             finally {
                 if (pstmt != null) pstmt.close();
             }
+            return bool;
         }
     
     
@@ -134,6 +144,8 @@ public class ComputerDAO {
     		ResultSet uprs = stmt.executeQuery(
     		"SELECT * FROM " + tbName);
 
+    		if(disco.compareTo(intro)>0)
+    		{
     		uprs.moveToInsertRow();
     		uprs.updateString("NAME", computerName);
     		uprs.updateInt("COMPANY_ID", companyID);
@@ -143,7 +155,14 @@ public class ComputerDAO {
 
     		uprs.insertRow();
     		uprs.beforeFirst();
-    		} catch (SQLException e ) {
+    		} 
+    		else
+    			{
+    			System.out.println("Sorry there seems to be an incoherence with your dates input. Creation aborted");
+
+    			}
+    		}
+    			catch (SQLException e ) {
     		Xeptions.printSQLException(e);
     		} finally {
     		if (stmt != null) { stmt.close(); 
