@@ -1,7 +1,6 @@
 package model;
 
-import java.util.Date;
-
+import java.time.LocalDate;
 // TODO: Auto-generated Javadoc
 /**
  * The Class Computer.
@@ -9,20 +8,20 @@ import java.util.Date;
 public class Computer {
 
 		/** The id. */
-		int id;
+		private int id;
 		
 		/** The company id. */
-		//int company_id;
-		Company company;
+		int company_id;
+		//private Company company;
 		
 		/** The name. */
-		String name;
+		private String name;
 		
 		/** The introduced. */
-		Date introduced;
+		private LocalDate introduced;
 		
 		/** The discontinued. */
-		Date discontinued;
+		private LocalDate discontinued;
 		
 		
 	/**
@@ -37,8 +36,7 @@ public class Computer {
 	 */
 	public Computer(int id) {
 		this.id=id;
-		introduced =new Date();
-		
+		introduced =LocalDate.now();
 	}		
 	
 	/**
@@ -47,13 +45,13 @@ public class Computer {
 	 * @param id the id
 	 * @param name the name
 	 */
-	public Computer(int id, String name, Date intro, Date disco, Company company)
+	public Computer(int id, String name, LocalDate intro, LocalDate disco, int c_id)
 	{
 		this.id=id;
 		this.name=name;
 		this.introduced=intro;
 		this.discontinued=disco;
-		this.company=company;
+		this.company_id=c_id;
 	}
 	
 	
@@ -84,7 +82,7 @@ public class Computer {
 	 *
 	 * @return the intro
 	 */
-	public Date getIntro()
+	public LocalDate getIntro()
 	{
 		return this.introduced;
 	}
@@ -94,7 +92,7 @@ public class Computer {
 	 *
 	 * @return the disco
 	 */
-	public Date getDisco()
+	public LocalDate getDisco()
 	{
 		return this.discontinued;
 	}
@@ -106,7 +104,7 @@ public class Computer {
 	 */
 	public int getCId()
 	{
-		return this.company.getId();
+		return this.company_id;
 	}
 	
 	
@@ -132,7 +130,7 @@ public class Computer {
 	public void setC_Id(int newId)
 	{
 		// Add Exception to prevent setting the id to NULL
-		this.company.setId(newId);
+		this.company_id=newId;
 		
 	}
 	
@@ -152,7 +150,7 @@ public class Computer {
 	 *
 	 * @param newDate the new disco
 	 */
-	public void setDisco(Date newDate)
+	public void setDisco(LocalDate newDate)
 	{
 		this.discontinued=newDate;
 	}
@@ -162,8 +160,15 @@ public class Computer {
 	 *
 	 * @param newDate the new intro
 	 */
-	public void setIntro(Date newDate)
+	public void setIntro(LocalDate newDate)
 	{
-		this.discontinued=newDate;
+		this.introduced=newDate;
+	}
+	
+	public String toString()
+	{
+		return "id=" + id + ", name=" + name + ", introduced="
+				+ introduced + ", discontinued=" + discontinued + ", company="
+				+ company_id;
 	}
 }

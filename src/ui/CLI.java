@@ -8,12 +8,14 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-import persistence.ComputerDAO;
+import model.Company;
+import model.Computer;
 import service.CompanyS;
 import service.ComputerS;
 import sqlShenanigans.SqlConnector;
@@ -41,7 +43,6 @@ public class CLI {
 		String disc = null;
 		
 		CompanyS anyS=new CompanyS();
-		ComputerDAO Comp=new ComputerDAO();
 		ComputerS compS=new ComputerS();
 		
 		    
@@ -90,14 +91,25 @@ public class CLI {
 	    case 1:
 	      System.out.println("'List all computers' selected ->");
 	      System.out.println("");
-	      compS.getAllComputer(con);
+	      ArrayList <Computer> c=(ArrayList<Computer>) compS.getAllComputer(con);
+	      for(int i=0; i<c.size();i++)
+          {
+	    	  System.out.println(c.get(i).toString());
+          
+          }
+	 
 	      break;
 	    
 	    
 	    case 2:
 	    	System.out.println("'List all companies' selected ->");
 	    	System.out.println("");
-	    	anyS.getAllCompanies(con);
+	    	 ArrayList <Company> co=(ArrayList<Company>) anyS.getAllCompanies(con);
+		      for(int i=0; i<co.size();i++)
+	          {
+		    	  System.out.println(co.get(i).toString());
+	          
+	          }
 	      break;
 	    
 	    
@@ -109,7 +121,7 @@ public class CLI {
 	  		id=three.nextInt();
 	  		//three.close();
 	  		System.out.println("Attempting to fetch computer details for computer ID="+id);
-		    Comp.viewCompDetails(con, id); 
+		    compS.getCompDetails(con, id); 
 		    }
 
 		    catch(InputMismatchException e)
@@ -145,7 +157,7 @@ public class CLI {
 	    	  Date sqlDate=Date.valueOf(date);
 	    	  LocalDate date2=LocalDate.parse(intr, formatter);
 	    	  Date sqlDate2=Date.valueOf(date2);
-	    	  ComputerDAO.insertComputer(con, name, c_id, sqlDate2, sqlDate);
+	    	  compS.insertComputer(con, name, c_id, sqlDate2, sqlDate);
 	    	  }
 	    	  catch(DateTimeParseException e )
 	    	  {
@@ -188,7 +200,7 @@ public class CLI {
 		    	  
 		    	  try {
 		    	  name=subfive.next();
-		    	  ComputerDAO.updateComputerName(con, name, id);   
+		    	  compS.updateComputerName(con, name, id);   
 		    	  System.out.println("Your modification has been carried out (hopefully, maybe, probably, definitely...unless "+id+ " didn't even exist to begin with)");
 		    	  System.out.println("");
 		    	  }
@@ -213,7 +225,7 @@ public class CLI {
 			    	  Date sqlDate2=Date.valueOf(date2);
 			    	  
 			    	  //five2.close();
-			    	  if(ComputerDAO.updateComputerDisc(con, sqlDate2,sqlDate1, id)==1)
+			    	  if(compS.updateComputerDisc(con, sqlDate2,sqlDate1, id)==1)
 			    	  {
 			    	  System.out.println("Your modification has been carried out (hopefully, maybe, probably, definitely)");
 			    	  System.out.println("");
@@ -238,7 +250,7 @@ public class CLI {
 		      try {
 		    	  id=six.nextInt();
 		    	  //six.close();
-			      ComputerDAO.deleteComputer(con,id);		
+			      compS.deleteComputer(con,id);		
 			      System.out.println("Computer " +id+" has been deleted (hopefully, maybe, probably, definitely...unless " +id+" didn't even exist to begin with)");
 			      
 			  		}
@@ -270,7 +282,12 @@ public class CLI {
 			  		id=eight.nextInt();
 			  		//three.close();
 			  		System.out.println("Attempting to display page "+id);
-				    compS.viewSomeComputer(con, id);
+			  		ArrayList <Company> com=(ArrayList<Company>) anyS.getAllCompanies(con);
+				      for(int i=0; i<com.size();i++)
+			          {
+				    	  System.out.println(com.get(i).toString());
+			          
+			          }
 				    System.out.println();
 				    System.out.println("If you wish to exit please input 'exit'");
 				    }

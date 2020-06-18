@@ -7,10 +7,10 @@ package model;
 public class Company {
 	
 	/** The id. */
-	int id;
+	private int id;
 	
 	/** The name. */
-	String name;
+	private String name;
 	
 	
 	/**
@@ -85,5 +85,10 @@ public class Company {
 	{
 		this.name=newName;
 		
+	}
+	
+	public String toString()
+	{
+		return "id=" + id + ", name=" + name;
 	}
 }

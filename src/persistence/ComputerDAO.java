@@ -3,6 +3,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import mapper.Mapper;
 import model.Computer;
 
 import sqlShenanigans.Xeptions;
@@ -29,25 +30,19 @@ public class ComputerDAO {
 		
 		    Statement stmt = null;
 		    String query =
-		        "select id, name, company_id from "+ ComputerDAO.tbName;
+		        "select id, name, company_id, introduced, discontinued from "+ ComputerDAO.tbName;
 		    Computer computer=null;
 		    List<Computer> computers = new ArrayList<Computer>();
 
 		    try {
 		        stmt = con.createStatement();
 		        ResultSet rs = stmt.executeQuery(query);
-		        computer=new Computer();
 		        while (rs.next()) {
-		        	computer.setId(rs.getInt("id"));
-		        	computer.setName(rs.getString("name"));
-		        	computers.add(computer);
-		            String computerName = rs.getString("name");
-		            int ID = rs.getInt("id");
-		            int companyID = rs.getInt("company_id");
-		            System.out.println(computerName + "\t" + ID +
-		                               "\t" + companyID);
-		        }
-		    } catch (SQLException e ) {
+		        	computer=Mapper.map(rs);
+		            computers.add(computer);
+		
+		    }}
+		     catch (SQLException e ) {
 		        Xeptions.printSQLException(e);
 		    } finally {
 		        if (stmt != null) { stmt.close(); }
@@ -65,12 +60,11 @@ public class ComputerDAO {
 	 * @return the list
 	 * @throws SQLException the SQL exception
 	 */
-	public List<Computer> viewSomeComputer(Connection con, Page page) throws SQLException {
+	public Computer viewSomeComputer(Connection con, Page page) throws SQLException {
 		
 		 PreparedStatement pstmt = null;   
 	    
-	    Computer computer=null;
-	    List<Computer> computers = new ArrayList<Computer>();
+	    Computer computer=new Computer();
 
 	    try {
 	        pstmt = con.prepareStatement("SELECT * FROM "+ComputerDAO.tbName+ " ORDER BY id LIMIT ? OFFSET ?");
@@ -84,21 +78,14 @@ public class ComputerDAO {
 	        ResultSet rs = pstmt.executeQuery();
 	        computer=new Computer();
 	        while (rs.next()) {
-	        	computer.setId(rs.getInt("id"));
-	        	computer.setName(rs.getString("name"));
-	        	computers.add(computer);
-	            String computerName = rs.getString("name");
-	            int ID = rs.getInt("id");
-	            int companyID = rs.getInt("company_id");
-	            System.out.println(computerName + "\t" + ID +
-	                               "\t" + companyID);
+	        	computer=Mapper.map(rs);
 	        }
 	    } catch (SQLException e ) {
 	        Xeptions.printSQLException(e);
 	    } finally {
 	        if (pstmt != null) { pstmt.close(); }
 	    }
-	    return computers;
+	    return computer;
 }
 	
 	
@@ -110,7 +97,7 @@ public class ComputerDAO {
      * @param computerID the computer ID
      * @throws SQLException the SQL exception
      */
-    public static void updateComputerName(Connection con,String newName, int computerID)
+    public void updateComputerName(Connection con,String newName, int computerID)
         throws SQLException {
 
         PreparedStatement pstmt = null;   
@@ -124,6 +111,7 @@ public class ComputerDAO {
             pstmt.setString(1, newName);
             pstmt.setInt(2, computerID);
             pstmt.executeUpdate();
+            
           //TODO Update the Java object
         }
         finally {
@@ -141,7 +129,7 @@ public class ComputerDAO {
      * @return the int
      * @throws SQLException the SQL exception
      */
-    public static int updateComputerDisc(Connection con,Date intr, Date disc, int computerID)
+    public int updateComputerDisc(Connection con,Date intr, Date disc, int computerID)
             throws SQLException {
     		int bool=0;
             PreparedStatement pstmt = null;   
@@ -184,7 +172,7 @@ public class ComputerDAO {
      * @param disco the disco
      * @throws SQLException the SQL exception
      */
-    public static void insertComputer(Connection con,String computerName, int companyID, Date intro, Date disco)
+    public  void insertComputer(Connection con,String computerName, int companyID, Date intro, Date disco)
     		throws SQLException {
 
     		Statement stmt=null;
@@ -227,7 +215,7 @@ public class ComputerDAO {
      * @param computerID the computer ID
      * @throws SQLException the SQL exception
      */
-    public static void deleteComputer(Connection con,int computerID)
+    public void deleteComputer(Connection con,int computerID)
             throws SQLException {
       
             PreparedStatement pstmt = null;   
@@ -260,33 +248,19 @@ public class ComputerDAO {
 
        
         PreparedStatement pstmt = null;   
-        Computer computer=null;
+        Computer computer = new Computer();
         try {
 
-            pstmt = con.prepareStatement(
+            	pstmt = con.prepareStatement(
             			"SELECT id, name, introduced, discontinued, company_id FROM computer WHERE id=? ");
                    //     "SELECT id, name, introduced, discontinued, company_id FROM "+tbName +"WHERE id=? ");
 
-            pstmt.setInt(1, computerID); 
+            	pstmt.setInt(1, computerID); 
     	        ResultSet rs = pstmt.executeQuery();
     	        
-    	        computer = new Computer();
     	        while (rs.next()) {
-    	        	computer.setId(rs.getInt("id"));
-    				computer.setName(rs.getString("name"));
-    				computer.setIntro(rs.getDate("introduced"));
-    				computer.setDisco(rs.getDate("discontinued"));
-    	        	computer.setC_Id(rs.getInt("id"));
-    	        	
-    	        	
-    	        	String computerName = rs.getString("name");
-    	            int ID = rs.getInt("id");
-    	            int companyID = rs.getInt("company_id");
-    	            Date in=rs.getDate("introduced");
-    	            Date di=rs.getDate("discontinued");
-    	            System.out.println(ID + "\t" + computerName + "\t" + 
-    	                               "\t" + in + "\t" + di + "\t" + companyID);
-    	   
+    	        	computer=Mapper.map(rs);
+    	        	System.out.println(computer.toString());
     	        				}
         }
         finally {
