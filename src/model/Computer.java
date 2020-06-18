@@ -1,7 +1,7 @@
 package model;
 
 import java.time.LocalDate;
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class Computer.
  */
@@ -11,7 +11,7 @@ public class Computer {
 		private int id;
 		
 		/** The company id. */
-		int company_id;
+		private int company_id;
 		//private Company company;
 		
 		/** The name. */
@@ -45,13 +45,14 @@ public class Computer {
 	 * @param id the id
 	 * @param name the name
 	 */
-	public Computer(int id, String name, LocalDate intro, LocalDate disco, int c_id)
+	public Computer(int id, String name, LocalDate intro, LocalDate disco, int c_id/* Company company */)
 	{
 		this.id=id;
 		this.name=name;
 		this.introduced=intro;
 		this.discontinued=disco;
 		this.company_id=c_id;
+		//this.company=company;
 	}
 	
 	
@@ -105,6 +106,7 @@ public class Computer {
 	public int getCId()
 	{
 		return this.company_id;
+		//return this.company.getId();
 	}
 	
 	
@@ -127,10 +129,11 @@ public class Computer {
 	 *
 	 * @param newId the new c id
 	 */
-	public void setC_Id(int newId)
+	public void setC_Id(int newId/*Company company*/)
 	{
 		// Add Exception to prevent setting the id to NULL
 		this.company_id=newId;
+		//this.company=company;
 		
 	}
 	
@@ -169,6 +172,6 @@ public class Computer {
 	{
 		return "id=" + id + ", name=" + name + ", introduced="
 				+ introduced + ", discontinued=" + discontinued + ", company="
-				+ company_id;
+				+ company_id/*+company*/;
 	}
 }

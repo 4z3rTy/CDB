@@ -84,7 +84,6 @@ public class CLI {
 	    
 		
 	    
-	    // Switch construct
 	    switch (option) {
 	    
 	    
@@ -282,7 +281,7 @@ public class CLI {
 			  		id=eight.nextInt();
 			  		//three.close();
 			  		System.out.println("Attempting to display page "+id);
-			  		ArrayList <Company> com=(ArrayList<Company>) anyS.getAllCompanies(con);
+			  		ArrayList <Company> com=(ArrayList<Company>) anyS.viewSomeCompanies(con,id);
 				      for(int i=0; i<com.size();i++)
 			          {
 				    	  System.out.println(com.get(i).toString());

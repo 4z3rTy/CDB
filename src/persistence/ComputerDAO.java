@@ -9,13 +9,12 @@ import model.Computer;
 import sqlShenanigans.Xeptions;
 import ui.Page;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ComputerDAO.
  */
 public class ComputerDAO {
 	
-	/** The tb name. */
+	/** The table name. */
 	static String tbName="computer";
 
 	
@@ -100,6 +99,7 @@ public class ComputerDAO {
     public void updateComputerName(Connection con,String newName, int computerID)
         throws SQLException {
 
+
         PreparedStatement pstmt = null;   
       
         try {
@@ -112,7 +112,8 @@ public class ComputerDAO {
             pstmt.setInt(2, computerID);
             pstmt.executeUpdate();
             
-          //TODO Update the Java object
+            
+         
         }
         finally {
             if (pstmt != null) pstmt.close();
@@ -147,7 +148,6 @@ public class ComputerDAO {
                 pstmt.setInt(3, computerID);
                 pstmt.executeUpdate();
                 bool=1;
-                //TODO Update the Java object
                 
                 }
                 else
@@ -172,9 +172,9 @@ public class ComputerDAO {
      * @param disco the disco
      * @throws SQLException the SQL exception
      */
-    public  void insertComputer(Connection con,String computerName, int companyID, Date intro, Date disco)
+    public  Computer insertComputer(Connection con,String computerName, int companyID, Date intro, Date disco)
     		throws SQLException {
-
+    		Computer comp = new Computer();
     		Statement stmt=null;
     		try {
     		stmt = con.createStatement(
@@ -191,6 +191,7 @@ public class ComputerDAO {
     		uprs.updateInt("COMPANY_ID", companyID);
     		uprs.updateDate("INTRODUCED", intro);
     		uprs.updateDate("DISCONTINUED", disco);
+    		comp=Mapper.map(uprs);
     		//uprs.updateInt("ID", computerID);
 
     		uprs.insertRow();
@@ -206,7 +207,8 @@ public class ComputerDAO {
     		Xeptions.printSQLException(e);
     		} finally {
     		if (stmt != null) { stmt.close(); 
-    					}}}
+    					}}
+			return comp;}
     
     /**
      * Delete computer.
