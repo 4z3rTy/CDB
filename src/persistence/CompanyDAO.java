@@ -7,10 +7,23 @@ import model.Company;
 import sqlShenanigans.Xeptions;
 import ui.Page;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CompanyDAO.
+ */
 public class CompanyDAO{
+	
+	/** The tb name. */
 	static String tbName="company";
 
 
+/**
+ * View company.
+ *
+ * @param con the con
+ * @return the list
+ * @throws SQLException the SQL exception
+ */
 public List<Company> viewCompany(Connection con) throws SQLException {
 	   
 
@@ -42,6 +55,14 @@ public List<Company> viewCompany(Connection con) throws SQLException {
 		    return companies;
 }
 
+/**
+ * View some companies.
+ *
+ * @param con the con
+ * @param page the page
+ * @return the list
+ * @throws SQLException the SQL exception
+ */
 public List<Company> viewSomeCompanies(Connection con, Page page) throws SQLException {
 	
 	 PreparedStatement pstmt = null;   

@@ -4,10 +4,25 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SqlConnector.
+ */
 public class SqlConnector {  // Lazy Initialization Singleton
 
-	static Connection con;
+	/** The con. */
+  static Connection con;
+	
+	/** The instance. */
 	static SqlConnector instance=null;
+	
+	/**
+	 * Gets the single instance of SqlConnector.
+	 *
+	 * @param username the username
+	 * @param password the password
+	 * @return single instance of SqlConnector
+	 */
 	public static SqlConnector getInstance(String username, String password)
 	{
 		if(instance==null)
@@ -16,6 +31,13 @@ public class SqlConnector {  // Lazy Initialization Singleton
 		}
 		return instance;
 	}
+	
+	/**
+	 * Instantiates a new sql connector.
+	 *
+	 * @param username the username
+	 * @param password the password
+	 */
 	private SqlConnector(String username , String password){	
 	Connection con = null;
 	try {
@@ -30,6 +52,11 @@ public class SqlConnector {  // Lazy Initialization Singleton
 
 		}
 	
+	/**
+	 * Gets the co.
+	 *
+	 * @return the co
+	 */
 	public Connection getCo()
 	{
 		return SqlConnector.con;

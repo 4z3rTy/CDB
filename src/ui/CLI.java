@@ -20,7 +20,15 @@ import sqlShenanigans.SqlConnector;
 
 public class CLI {
 
-	  public static void main(String[] args) throws IOException, SQLException, ParseException {
+	  /**
+  	 * The main method.
+  	 *
+  	 * @param args the arguments
+  	 * @throws IOException Signals that an I/O exception has occurred.
+  	 * @throws SQLException the SQL exception
+  	 * @throws ParseException the parse exception
+  	 */
+  	public static void main(String[] args) throws IOException, SQLException, ParseException {
 	  
 	    Scanner sc = new Scanner(System.in);
 		

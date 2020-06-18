@@ -8,10 +8,23 @@ import model.Computer;
 import sqlShenanigans.Xeptions;
 import ui.Page;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ComputerDAO.
+ */
 public class ComputerDAO {
+	
+	/** The tb name. */
 	static String tbName="computer";
 
 	
+	/**
+	 * View computer.
+	 *
+	 * @param con the con
+	 * @return the list
+	 * @throws SQLException the SQL exception
+	 */
 	public List<Computer> viewComputer(Connection con) throws SQLException {
 		
 		    Statement stmt = null;
@@ -44,6 +57,14 @@ public class ComputerDAO {
 	
 	
 	
+	/**
+	 * View some computer.
+	 *
+	 * @param con the con
+	 * @param page the page
+	 * @return the list
+	 * @throws SQLException the SQL exception
+	 */
 	public List<Computer> viewSomeComputer(Connection con, Page page) throws SQLException {
 		
 		 PreparedStatement pstmt = null;   
@@ -81,6 +102,14 @@ public class ComputerDAO {
 }
 	
 	
+    /**
+     * Update computer name.
+     *
+     * @param con the con
+     * @param newName the new name
+     * @param computerID the computer ID
+     * @throws SQLException the SQL exception
+     */
     public static void updateComputerName(Connection con,String newName, int computerID)
         throws SQLException {
 
@@ -95,12 +124,23 @@ public class ComputerDAO {
             pstmt.setString(1, newName);
             pstmt.setInt(2, computerID);
             pstmt.executeUpdate();
+          //TODO Update the Java object
         }
         finally {
             if (pstmt != null) pstmt.close();
         }
     }
     
+    /**
+     * Update computer disc.
+     *
+     * @param con the con
+     * @param intr the intr
+     * @param disc the disc
+     * @param computerID the computer ID
+     * @return the int
+     * @throws SQLException the SQL exception
+     */
     public static int updateComputerDisc(Connection con,Date intr, Date disc, int computerID)
             throws SQLException {
     		int bool=0;
@@ -119,6 +159,8 @@ public class ComputerDAO {
                 pstmt.setInt(3, computerID);
                 pstmt.executeUpdate();
                 bool=1;
+                //TODO Update the Java object
+                
                 }
                 else
                 {
@@ -132,6 +174,16 @@ public class ComputerDAO {
         }
     
     
+    /**
+     * Insert computer.
+     *
+     * @param con the con
+     * @param computerName the computer name
+     * @param companyID the company ID
+     * @param intro the intro
+     * @param disco the disco
+     * @throws SQLException the SQL exception
+     */
     public static void insertComputer(Connection con,String computerName, int companyID, Date intro, Date disco)
     		throws SQLException {
 
@@ -168,6 +220,13 @@ public class ComputerDAO {
     		if (stmt != null) { stmt.close(); 
     					}}}
     
+    /**
+     * Delete computer.
+     *
+     * @param con the con
+     * @param computerID the computer ID
+     * @throws SQLException the SQL exception
+     */
     public static void deleteComputer(Connection con,int computerID)
             throws SQLException {
       
@@ -189,6 +248,14 @@ public class ComputerDAO {
         }
     
 
+    /**
+     * View comp details.
+     *
+     * @param con the con
+     * @param computerID the computer ID
+     * @return the computer
+     * @throws SQLException the SQL exception
+     */
     public Computer viewCompDetails(Connection con,int computerID) throws SQLException {
 
        
