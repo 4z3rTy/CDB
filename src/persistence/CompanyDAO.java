@@ -13,16 +13,16 @@ import ui.Page;
  */
 public class CompanyDAO{
 	
-	/** The tb name. */
+	/** The table name. */
 	static String tbName="company";
 
 
 /**
  * View company.
  *
- * @param con the con
- * @return the list
- * @throws SQLException the SQL exception
+ * @param con the SqlConnection
+ * @return The list of all companies queried
+ * @throws SQLException 
  */
 public List<Company> viewCompany(Connection con) throws SQLException {
 	   
@@ -58,10 +58,10 @@ public List<Company> viewCompany(Connection con) throws SQLException {
 /**
  * View some companies.
  *
- * @param con the con
- * @param page the page
- * @return the list
- * @throws SQLException the SQL exception
+ * @param con the SqlConnection
+ * @param page the page number the user wishes to display
+ * @return the list of all the companies
+ * @throws SQLException
  */
 public List<Company> viewSomeCompanies(Connection con, Page page) throws SQLException {
 	

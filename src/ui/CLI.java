@@ -28,7 +28,7 @@ public class CLI {
   	 * @throws SQLException the SQL exception
   	 * @throws ParseException the parse exception
   	 */
-  	public static void main(String[] args) throws IOException, SQLException, ParseException {
+  	public static void main(String[] args) throws IOException, SQLException ,ParseException {
 	  
 	    Scanner sc = new Scanner(System.in);
 		
@@ -260,22 +260,35 @@ public class CLI {
 	      break; 
 	      
 	    case 8:
+	    	boolean notdone=true;
 	    	System.out.println("List some or all of the computers in the db ->");
+	    	Scanner eight=new Scanner(System.in);
+	    	while(notdone)
+	    	{
 	    	System.out.println("Please indicate which page you wish to see:");
-		      Scanner eight=new Scanner(System.in);
 		      try {
 			  		id=eight.nextInt();
 			  		//three.close();
-			  		System.out.println("Attempting to display page"+id);
+			  		System.out.println("Attempting to display page "+id);
 				    compS.viewSomeComputer(con, id);
+				    System.out.println();
+				    System.out.println("If you wish to exit please input 'exit'");
 				    }
 
 				    catch(InputMismatchException e)
-					{
-				    	eight.next();
+		      {
+				    	if(eight.next().equals("exit"))
+				    	{
+				    		notdone=false;
+				    		System.out.println("Option exited succesfully.");
+				    	}
+				    	else
+				    	{
 				        System.out.println("That’s not an integer => ");
 				        System.out.println();
+				    	}
 					} 
+	    	}
 		   break;
 	    default:
 	    	System.out.println("The option you selected is not currently available, please try again :) ");

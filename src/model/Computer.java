@@ -12,7 +12,8 @@ public class Computer {
 		int id;
 		
 		/** The company id. */
-		int company_id;
+		//int company_id;
+		Company company;
 		
 		/** The name. */
 		String name;
@@ -46,10 +47,13 @@ public class Computer {
 	 * @param id the id
 	 * @param name the name
 	 */
-	public Computer(int id, String name)
+	public Computer(int id, String name, Date intro, Date disco, Company company)
 	{
 		this.id=id;
 		this.name=name;
+		this.introduced=intro;
+		this.discontinued=disco;
+		this.company=company;
 	}
 	
 	
@@ -102,7 +106,7 @@ public class Computer {
 	 */
 	public int getCId()
 	{
-		return this.company_id;
+		return this.company.getId();
 	}
 	
 	
@@ -128,7 +132,7 @@ public class Computer {
 	public void setC_Id(int newId)
 	{
 		// Add Exception to prevent setting the id to NULL
-		this.company_id=newId;
+		this.company.setId(newId);
 		
 	}
 	
