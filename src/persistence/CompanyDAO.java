@@ -34,8 +34,8 @@ public List<Company> viewCompany() throws SQLException {
 		    Company company=null;
 		    List<Company> companies = new ArrayList<Company>();
 	
-		    try(Connection con=SqlConnector.getInstance()) {
-		       //Connection con=SqlConnector.getInstance();
+		    try {
+		       Connection con=SqlConnector.getInstance();
 		       stmt = con.createStatement();
 		        ResultSet rs = stmt.executeQuery(SELECT_ALL);
 		        while (rs.next()) {
