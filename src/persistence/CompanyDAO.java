@@ -5,6 +5,7 @@ import java.util.List;
 
 import mapper.Mapper;
 import model.Company;
+import sqlShenanigans.SqlConnector;
 import sqlShenanigans.Xeptions;
 import ui.Page;
 
@@ -16,7 +17,8 @@ public class CompanyDAO{
 	
 	/** The table name. */
 	static String tbName="company";
-
+	private static final String SELECT_ALL="select id, name from "+ CompanyDAO.tbName;
+	private static final String SELECT_SOME="SELECT * FROM "+CompanyDAO.tbName+ " ORDER BY id LIMIT ? OFFSET ?";
 
 /**
  * View company.
@@ -25,18 +27,17 @@ public class CompanyDAO{
  * @return The list of all companies queried
  * @throws SQLException 
  */
-public List<Company> viewCompany(Connection con) throws SQLException {
+public List<Company> viewCompany() throws SQLException {
 	   
 
 		    Statement stmt = null;
-		    String query =
-		        "select id, name from "+ tbName;
 		    Company company=null;
 		    List<Company> companies = new ArrayList<Company>();
 	
-		    try {
-		        stmt = con.createStatement();
-		        ResultSet rs = stmt.executeQuery(query);
+		    try(Connection con=SqlConnector.getInstance()) {
+		       //Connection con=SqlConnector.getInstance();
+		       stmt = con.createStatement();
+		        ResultSet rs = stmt.executeQuery(SELECT_ALL);
 		        while (rs.next()) {
 		        	company=Mapper.map1(rs);
 		        	companies.add(company);
@@ -58,15 +59,16 @@ public List<Company> viewCompany(Connection con) throws SQLException {
  * @return the list of all the companies
  * @throws SQLException
  */
-public List<Company> viewSomeCompanies(Connection con, Page page) throws SQLException {
+public List<Company> viewSomeCompanies(Page page) throws SQLException {
 	
 	 PreparedStatement pstmt = null;   
    
    Company company=null;
    List<Company> companies = new ArrayList<Company>();
 
-   try {
-       pstmt = con.prepareStatement("SELECT * FROM "+CompanyDAO.tbName+ " ORDER BY id LIMIT ? OFFSET ?");
+   try{
+	   Connection con=SqlConnector.getInstance();
+       pstmt = con.prepareStatement(SELECT_SOME);
        
        int limit=page.getAmount();
        int offset=(page.getPage()-1)*page.getAmount();

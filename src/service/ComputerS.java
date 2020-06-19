@@ -22,56 +22,54 @@ private ComputerDAO compDAO = new ComputerDAO();
 	/**
 	 * Gets the all computer.
 	 *
-	 * @param con the con
 	 * @return the all computer
 	 * @throws SQLException the SQL exception
 	 */
-	public List<Computer> getAllComputer(Connection con) throws SQLException
+	public List<Computer> getAllComputer() throws SQLException
 	{
-		return compDAO.viewComputer(con);
+		return compDAO.viewComputer();
 	
 	}
 	
 	/**
 	 * View some computer.
 	 *
-	 * @param con the con
 	 * @param pageNumber the page number
 	 * @return the list
 	 * @throws SQLException the SQL exception
 	 */
 	
-	  public Computer getCompDetails(Connection con,int computerID) throws SQLException {
-		  return compDAO.viewCompDetails(con, computerID);
+	  public Computer getCompDetails(int computerID) throws SQLException {
+		  return compDAO.viewCompDetails( computerID);
 	  }
 	  
 	public Computer viewSomeComputer(Connection con, int pageNumber) throws SQLException
 	{
 		Page page = new Page(pageNumber);
-		page.setMax(page.countDb(con,"company"));
+		page.setMax(page.countDb("company"));
 		page.calcPages(page.getAmount(),page.getMax());
-		return compDAO.viewSomeComputer(con, page);
+		return compDAO.viewSomeComputer( page);
 	}
 	
 	
-	public void updateComputerName(Connection con,String newName, int computerID) throws SQLException {
-		compDAO.updateComputerName(con, newName, computerID);
+	public void updateComputerName(String newName, int computerID) throws SQLException {
+		compDAO.updateComputerName( newName, computerID);
 	}
 	
-	 public int updateComputerDisc(Connection con,Date intr, Date disc, int computerID)
+	 public int updateComputerDisc(Date intr, Date disc, int computerID)
 	            throws SQLException {
-		 return compDAO.updateComputerDisc(con, intr, disc, computerID);
+		 return compDAO.updateComputerDisc( intr, disc, computerID);
 	 }
 	 
 	 
-	 public void insertComputer(Connection con,String computerName, int companyID, Date intro, Date disco)
+	 public void insertComputer(String computerName, int companyID, Date intro, Date disco)
 	    		throws SQLException {
-		 compDAO.insertComputer(con, computerName, companyID, intro, disco);
+		 compDAO.insertComputer( computerName, companyID, intro, disco);
 	 }
 	
-	 public void deleteComputer(Connection con,int computerID)
+	 public void deleteComputer(int computerID)
 	            throws SQLException {
-		 compDAO.deleteComputer(con, computerID);
+		 compDAO.deleteComputer( computerID);
 	 }
 	
 	//TODO Add the rest of the methods from the DAO 

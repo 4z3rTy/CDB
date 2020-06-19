@@ -46,8 +46,6 @@ public class CLI {
 		ComputerS compS=new ComputerS();
 		
 		    
-		SqlConnector server=SqlConnector.getInstance("root", "root");
-		Connection con=server.getCo();
 		
 
 	    while (running)
@@ -90,7 +88,7 @@ public class CLI {
 	    case 1:
 	      System.out.println("'List all computers' selected ->");
 	      System.out.println("");
-	      ArrayList <Computer> c=(ArrayList<Computer>) compS.getAllComputer(con);
+	      ArrayList <Computer> c=(ArrayList<Computer>) compS.getAllComputer();
 	      for(int i=0; i<c.size();i++)
           {
 	    	  System.out.println(c.get(i).toString());
@@ -103,7 +101,7 @@ public class CLI {
 	    case 2:
 	    	System.out.println("'List all companies' selected ->");
 	    	System.out.println("");
-	    	 ArrayList <Company> co=(ArrayList<Company>) anyS.getAllCompanies(con);
+	    	 ArrayList <Company> co=(ArrayList<Company>) anyS.getAllCompanies();
 		      for(int i=0; i<co.size();i++)
 	          {
 		    	  System.out.println(co.get(i).toString());
@@ -120,7 +118,7 @@ public class CLI {
 	  		id=three.nextInt();
 	  		//three.close();
 	  		System.out.println("Attempting to fetch computer details for computer ID="+id);
-		    compS.getCompDetails(con, id); 
+		    compS.getCompDetails(id); 
 		    }
 
 		    catch(InputMismatchException e)
@@ -156,7 +154,7 @@ public class CLI {
 	    	  Date sqlDate=Date.valueOf(date);
 	    	  LocalDate date2=LocalDate.parse(intr, formatter);
 	    	  Date sqlDate2=Date.valueOf(date2);
-	    	  compS.insertComputer(con, name, c_id, sqlDate2, sqlDate);
+	    	  compS.insertComputer(name, c_id, sqlDate2, sqlDate);
 	    	  }
 	    	  catch(DateTimeParseException e )
 	    	  {
@@ -199,7 +197,7 @@ public class CLI {
 		    	  
 		    	  try {
 		    	  name=subfive.next();
-		    	  compS.updateComputerName(con, name, id);   
+		    	  compS.updateComputerName(name, id);   
 		    	  System.out.println("Your modification has been carried out (hopefully, maybe, probably, definitely...unless "+id+ " didn't even exist to begin with)");
 		    	  System.out.println("");
 		    	  }
@@ -224,7 +222,7 @@ public class CLI {
 			    	  Date sqlDate2=Date.valueOf(date2);
 			    	  
 			    	  //five2.close();
-			    	  if(compS.updateComputerDisc(con, sqlDate2,sqlDate1, id)==1)
+			    	  if(compS.updateComputerDisc(sqlDate2,sqlDate1, id)==1)
 			    	  {
 			    	  System.out.println("Your modification has been carried out (hopefully, maybe, probably, definitely)");
 			    	  System.out.println("");
@@ -249,7 +247,7 @@ public class CLI {
 		      try {
 		    	  id=six.nextInt();
 		    	  //six.close();
-			      compS.deleteComputer(con,id);		
+			      compS.deleteComputer(id);		
 			      System.out.println("Computer " +id+" has been deleted (hopefully, maybe, probably, definitely...unless " +id+" didn't even exist to begin with)");
 			      
 			  		}
@@ -281,7 +279,7 @@ public class CLI {
 			  		id=eight.nextInt();
 			  		//three.close();
 			  		System.out.println("Attempting to display page "+id);
-			  		ArrayList <Company> com=(ArrayList<Company>) anyS.viewSomeCompanies(con,id);
+			  		ArrayList <Company> com=(ArrayList<Company>) anyS.viewSomeCompanies(id);
 				      for(int i=0; i<com.size();i++)
 			          {
 				    	  System.out.println(com.get(i).toString());

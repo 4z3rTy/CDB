@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import sqlShenanigans.SqlConnector;
 import sqlShenanigans.Xeptions;
 
 public class Page {
@@ -19,13 +20,14 @@ public class Page {
 	 }
 	 
 	 
-	 public int countDb(Connection con,String tbName) throws SQLException
+	 public int countDb(String tbName) throws SQLException
 		{
 			Statement stmt =null;
 			int count=-1;
 			String query =
 			        "select COUNT(*) from "+tbName;
 			try {
+			Connection con=SqlConnector.getInstance();
 	        stmt = con.createStatement();
 	        ResultSet rs = stmt.executeQuery(query);
 	        rs.next();

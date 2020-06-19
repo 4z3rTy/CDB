@@ -1,11 +1,11 @@
 package service;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
 import model.Company;
 import persistence.CompanyDAO;
+import sqlShenanigans.SqlConnector;
 import ui.Page;
 
 // TODO: Auto-generated Javadoc
@@ -21,13 +21,13 @@ private CompanyDAO anyDAO = new CompanyDAO();
 	/**
 	 * Gets the all companies.
 	 *
-	 * @param con the con
 	 * @return the all companies
 	 * @throws SQLException the SQL exception
 	 */
-	public List<Company> getAllCompanies(Connection con) throws SQLException
+	public List<Company> getAllCompanies() throws SQLException
 	{
-		return anyDAO.viewCompany(con);
+		SqlConnector.getInstance();
+		return anyDAO.viewCompany();
 	
 	}
 	
@@ -39,11 +39,11 @@ private CompanyDAO anyDAO = new CompanyDAO();
 	 * @return the list
 	 * @throws SQLException the SQL exception
 	 */
-	public List<Company> viewSomeCompanies(Connection con, int pageNumber) throws SQLException
+	public List<Company> viewSomeCompanies(int pageNumber) throws SQLException
 	{
 		Page page = new Page(pageNumber);
-		page.setMax(page.countDb(con,"company"));
+		page.setMax(page.countDb("company"));
 		page.calcPages(page.getAmount(),page.getMax());
-		return anyDAO.viewSomeCompanies(con, page);
+		return anyDAO.viewSomeCompanies(page);
 	}
 }

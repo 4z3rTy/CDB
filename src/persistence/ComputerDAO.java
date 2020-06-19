@@ -5,7 +5,7 @@ import java.util.List;
 
 import mapper.Mapper;
 import model.Computer;
-
+import sqlShenanigans.SqlConnector;
 import sqlShenanigans.Xeptions;
 import ui.Page;
 
@@ -16,7 +16,11 @@ public class ComputerDAO {
 	
 	/** The table name. */
 	static String tbName="computer";
-
+	private static final String SELECT_ALL="select id, name, company_id, introduced, discontinued from "+ ComputerDAO.tbName;
+	private static final String SELECT_SOME="SELECT * FROM "+ComputerDAO.tbName+ " ORDER BY id LIMIT ? OFFSET ?";
+	private static final String UPDATE="UPDATE computer SET name=? WHERE id=?";
+	private static final String DELETE="DELETE FROM computer WHERE id =?";
+	private static final String SELECT_WHERE="SELECT id, name, introduced, discontinued, company_id FROM computer WHERE id=? ";
 	
 	/**
 	 * View computer.
@@ -25,17 +29,16 @@ public class ComputerDAO {
 	 * @return the list
 	 * @throws SQLException the SQL exception
 	 */
-	public List<Computer> viewComputer(Connection con) throws SQLException {
+	public List<Computer> viewComputer() throws SQLException {
 		
 		    Statement stmt = null;
-		    String query =
-		        "select id, name, company_id, introduced, discontinued from "+ ComputerDAO.tbName;
 		    Computer computer=null;
 		    List<Computer> computers = new ArrayList<Computer>();
 
-		    try {
+		    try{
+		    	Connection con=SqlConnector.getInstance();
 		        stmt = con.createStatement();
-		        ResultSet rs = stmt.executeQuery(query);
+		        ResultSet rs = stmt.executeQuery(SELECT_ALL);
 		        while (rs.next()) {
 		        	computer=Mapper.map(rs);
 		            computers.add(computer);
@@ -59,14 +62,15 @@ public class ComputerDAO {
 	 * @return the list
 	 * @throws SQLException the SQL exception
 	 */
-	public Computer viewSomeComputer(Connection con, Page page) throws SQLException {
+	public Computer viewSomeComputer(Page page) throws SQLException {
 		
 		 PreparedStatement pstmt = null;   
 	    
 	    Computer computer=new Computer();
 
 	    try {
-	        pstmt = con.prepareStatement("SELECT * FROM "+ComputerDAO.tbName+ " ORDER BY id LIMIT ? OFFSET ?");
+	    	Connection con=SqlConnector.getInstance();
+	        pstmt = con.prepareStatement(SELECT_SOME);
 	        
 	        int limit=page.getAmount();
 	        int offset=(page.getPage()-1)*page.getAmount();
@@ -96,15 +100,15 @@ public class ComputerDAO {
      * @param computerID the computer ID
      * @throws SQLException the SQL exception
      */
-    public void updateComputerName(Connection con,String newName, int computerID)
+    public void updateComputerName(String newName, int computerID)
         throws SQLException {
 
 
         PreparedStatement pstmt = null;   
       
-        try {
+        try{
          
-
+        	Connection con=SqlConnector.getInstance();
             pstmt = con.prepareStatement(
                         "UPDATE computer SET name=? WHERE id=?");
 
@@ -130,16 +134,15 @@ public class ComputerDAO {
      * @return the int
      * @throws SQLException the SQL exception
      */
-    public int updateComputerDisc(Connection con,Date intr, Date disc, int computerID)
+    public int updateComputerDisc(Date intr, Date disc, int computerID)
             throws SQLException {
     		int bool=0;
             PreparedStatement pstmt = null;   
           
-            try {
+            try{
              
-
-                pstmt = con.prepareStatement(
-                            "UPDATE computer SET introduced=?,discontinued=? WHERE id=?");
+            	Connection con=SqlConnector.getInstance();
+                pstmt = con.prepareStatement(UPDATE);
 
                 if(disc.compareTo(intr)>0)
                 {
@@ -172,17 +175,18 @@ public class ComputerDAO {
      * @param disco the disco
      * @throws SQLException the SQL exception
      */
-    public  Computer insertComputer(Connection con,String computerName, int companyID, Date intro, Date disco)
+    public  Computer insertComputer(String computerName, int companyID, Date intro, Date disco)
     		throws SQLException {
     		Computer comp = new Computer();
     		Statement stmt=null;
-    		try {
-    		stmt = con.createStatement(
-    		ResultSet.TYPE_SCROLL_SENSITIVE,
-    		ResultSet.CONCUR_UPDATABLE);
-
-    		ResultSet uprs = stmt.executeQuery(
-    		"SELECT * FROM " + tbName);
+    		try{
+    			
+    			Connection con=SqlConnector.getInstance();
+	    		stmt = con.createStatement(
+	    		ResultSet.TYPE_SCROLL_SENSITIVE,
+	    		ResultSet.CONCUR_UPDATABLE);
+	
+	    		ResultSet uprs = stmt.executeQuery(SELECT_ALL);
 
     		if(disco.compareTo(intro)>0)
     		{
@@ -217,16 +221,15 @@ public class ComputerDAO {
      * @param computerID the computer ID
      * @throws SQLException the SQL exception
      */
-    public void deleteComputer(Connection con,int computerID)
+    public void deleteComputer(int computerID)
             throws SQLException {
       
             PreparedStatement pstmt = null;   
           
             try {
                 
-
-                pstmt = con.prepareStatement(
-                            "DELETE FROM computer WHERE id =?");
+            	Connection con=SqlConnector.getInstance();
+                pstmt = con.prepareStatement(DELETE);
             		//		"DELETE FROM "+tbName+ "WHERE id =?");
 
                 pstmt.setInt(1, computerID);
@@ -246,15 +249,15 @@ public class ComputerDAO {
      * @return the computer
      * @throws SQLException the SQL exception
      */
-    public Computer viewCompDetails(Connection con,int computerID) throws SQLException {
+    public Computer viewCompDetails(int computerID) throws SQLException {
 
        
         PreparedStatement pstmt = null;   
         Computer computer = new Computer();
         try {
 
-            	pstmt = con.prepareStatement(
-            			"SELECT id, name, introduced, discontinued, company_id FROM computer WHERE id=? ");
+        		Connection con=SqlConnector.getInstance();
+            	pstmt = con.prepareStatement(SELECT_WHERE);
                    //     "SELECT id, name, introduced, discontinued, company_id FROM "+tbName +"WHERE id=? ");
 
             	pstmt.setInt(1, computerID); 
